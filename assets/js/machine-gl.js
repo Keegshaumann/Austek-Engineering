@@ -23,8 +23,8 @@
 
   var scene = new T.Scene();
   var camera = new T.PerspectiveCamera(26, 1, 1, 6000);
-  camera.position.set(215, 545, 2320);   /* holds the full explode inside the frame */
-  camera.lookAt(-10, -30, 0);
+  camera.position.set(215, 545, 2780);   /* holds the full explode inside the frame */
+  camera.lookAt(-190, 55, 0);   /* pushes the model down-right, clear of the pinned copy */
 
   /* ── an environment so metal has something to reflect ──────────────────── */
   (function () {
@@ -399,6 +399,8 @@
   var ORDER = ['frame', 'casing', 'gears', 'shaft', 'motor', 'pump', 'wiring'];
   var cards = [].slice.call(document.querySelectorAll('.mcard'));
   var leadSvg = document.getElementById('m3Leads');
+  var subnavItems = document.querySelectorAll('#subnav li');
+  var subnavPct = document.getElementById('subnavPct');
   var leads = cards.map(function () {
     var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     el.setAttribute('class', 'm3-lead');
@@ -445,8 +447,8 @@
     scene.rotation.y = -0.72 + p * 0.86;          /* ~49 deg, always 3/4 */
     scene.rotation.x = -0.10 + Math.sin(p * Math.PI) * 0.10;
     explode = p < 0.12 ? 0
-            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 132
-            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 132;
+            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 104
+            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 104;
     spinT = p * Math.PI * 7;
 
     Object.keys(GROUPS).forEach(function (k) {
@@ -461,6 +463,16 @@
     cards.forEach(function (c) {
       c.classList.toggle('is-on', ORDER[idx] === c.dataset.key && p > 0.12 && p < 0.93);
     });
+    /* chapter index tracks the active section, the way their sub-nav does */
+    if (subnavItems) {
+      for (var si = 0; si < subnavItems.length; si++) {
+        var it = subnavItems[si];
+        it.classList.toggle('is-on', si === idx && p > 0.12 && p < 0.93);
+        it.classList.toggle('is-done', si < idx);
+      }
+    }
+    if (subnavPct) subnavPct.textContent = Math.round(p * 100) + '%';
+
     var st = document.getElementById('m3Stage');
     if (st) st.textContent = p < 0.12 ? 'Assembled' : p > 0.93 ? 'Reassembled'
             : (document.querySelector('.mcard[data-key="' + ORDER[idx] + '"]') || {}).dataset.name;

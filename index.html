@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=35">
+<link rel="stylesheet" href="assets/css/styles.css?v=40">
 </head>
 <body>
 
@@ -60,13 +60,20 @@
   <span id="m3Stage">Assembled</span>
   <span class="mhud__bar" id="m3Bar"></span>
 </div>
-<!-- MACHINE:END -->
 
-  <div class="machine__hud mono">
-    <span class="mhud__stage" id="mStage">01 · Setting out</span>
-    <span class="mhud__bar" id="mBar"></span>
-    <span class="mhud__pct" id="mPct">0%</span>
-  </div>
+<nav class="subnav mono" id="subnav" aria-label="Machine sections">
+  <ol>
+    <li data-key="frame"><i></i><span>01 Structural steel</span></li>
+    <li data-key="casing"><i></i><span>02 Boilermaking</span></li>
+    <li data-key="gears"><i></i><span>03 Drive &amp; gearing</span></li>
+    <li data-key="shaft"><i></i><span>04 Shafts &amp; bearings</span></li>
+    <li data-key="motor"><i></i><span>05 Motor &amp; coupling</span></li>
+    <li data-key="pump"><i></i><span>06 Pipefitting</span></li>
+    <li data-key="wiring"><i></i><span>07 Commissioning</span></li>
+  </ol>
+  <span class="subnav__pct" id="subnavPct">0%</span>
+</nav>
+<!-- MACHINE:END -->
 </div>
 
 
@@ -447,9 +454,9 @@
   </div>
 </footer>
 
-<script src="assets/js/anime.umd.min.js?v=35"></script>
-<script src="assets/js/three.min.js?v=35"></script>
-<script src="assets/js/machine-gl.js?v=35"></script>
-<script src="assets/js/main.js?v=35"></script>
+<script src="assets/js/anime.umd.min.js?v=40"></script>
+<script src="assets/js/three.min.js?v=40"></script>
+<script src="assets/js/machine-gl.js?v=40"></script>
+<script src="assets/js/main.js?v=40"></script>
 </body>
 </html>
