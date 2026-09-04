@@ -608,3 +608,32 @@ main{position:relative;z-index:1}
   .subnav ol{gap:10px}
   .subnav li i{width:7px;height:7px}
 }
+
+/* ── scroll chapters: they carry no content, they carry the scroll ──────── */
+.chapters{position:relative;z-index:1;pointer-events:none}
+.chapter{height:160vh}
+
+/* ── theme inversion, the way their section-light containers work ───────── */
+body{transition:background-color .7s ease}
+body.theme-light{background:var(--paper)!important}
+body.theme-light .machine::after{
+  background:linear-gradient(100deg,var(--paper) 20%,rgba(216,213,206,.66) 38%,transparent 58%);
+}
+body.theme-light .mcard__n{color:#b8410f}
+body.theme-light .mcard h3{color:var(--ink)}
+body.theme-light .mcard p{color:#57574f}
+body.theme-light .subnav{background:linear-gradient(180deg,transparent,rgba(216,213,206,.92) 46%)}
+body.theme-light .subnav li{color:#4c4c46}
+body.theme-light .subnav li.is-on{color:var(--ink)}
+body.theme-light .subnav li.is-on i{background:#b8410f}
+body.theme-light .subnav__pct{color:var(--ink)}
+body.theme-light .nav .logo__wm,
+body.theme-light .nav .nav__links a{color:var(--ink)}
+body.theme-light .nav.is-stuck{
+  background:rgba(216,213,206,.86);border-bottom-color:rgba(26,27,29,.14);
+}
+body.theme-light .burger span{background:var(--ink)}
+
+/* the machine steps aside once the chapters are done */
+.machine{transition:opacity .6s ease}
+.machine.is-done{opacity:0}

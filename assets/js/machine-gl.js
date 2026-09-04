@@ -10,6 +10,7 @@
 
   var T = window.THREE, A = window.anime;
   var utils = A.utils, animate = A.animate, onScroll = A.onScroll;
+  var ScrollObserverRef = A.ScrollObserver;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── renderer ──────────────────────────────────────────────────────────── */
@@ -50,7 +51,8 @@
     scene.environment = tex;
   })();
 
-  scene.add(new T.HemisphereLight(0x8496a8, 0x101317, 0.62));
+  var hemi = new T.HemisphereLight(0x8496a8, 0x101317, 0.62);
+  scene.add(hemi);
 
   /* key is deliberately soft — it models the form but does not define it */
   var key = new T.DirectionalLight(0xe8eef6, 1.65);
@@ -73,10 +75,8 @@
   var fill = new T.DirectionalLight(0xa9bed8, 0.55);
   fill.position.set(620, 60, 380); scene.add(fill);
 
-  var floor = new T.Mesh(
-    new T.PlaneGeometry(4000, 4000),
-    new T.ShadowMaterial({ opacity: 0.30 })
-  );
+  var floorMat = new T.ShadowMaterial({ opacity: 0.30 });
+  var floor = new T.Mesh(new T.PlaneGeometry(4000, 4000), floorMat);
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -215;
   floor.receiveShadow = true;
@@ -368,13 +368,13 @@
     g.rotateY(Math.PI / 2);
     return part(g, matr, [x, 0, 0], key, dir, spread);
   }
-  accentRing(118, 2.2, -266, GLOW_C, 'pump', [-1, .2, .25], 1.45);
-  accentRing(147, 2.4, -44,  GLOW,   'shaft', [.1, 1, .2], 1.25);
-  accentRing(160, 1.8, 176,  GLOW_C, 'motor', [1, .35, -.4], 1.4);
+  accentRing(118, 2.2, -266, GLOW_C, 'inspect', [-1, .2, .25], 1.45);
+  accentRing(147, 2.4, -44,  GLOW,   'inspect', [.1, 1, .2], 1.25);
+  accentRing(160, 1.8, 176,  GLOW_C, 'inspect', [1, .35, -.4], 1.4);
   for (var d2 = 0; d2 < 8; d2++) {
     var da = d2 / 8 * Math.PI * 2;
     part(new T.CylinderGeometry(2.6, 2.6, 5, 10), d2 % 3 ? GLOW_C : GLOW,
-         [392, Math.sin(da) * 108, Math.cos(da) * 108], 'motor', [1, .4, -.45], 1.45);
+         [392, Math.sin(da) * 108, Math.cos(da) * 108], 'inspect', [1, .4, -.45], 1.45);
   }
 
   /* Axial explode. Radial scatter made the parts overlap into a blob; drawing
@@ -396,7 +396,7 @@
   })();
 
   /* ── scroll choreography ───────────────────────────────────────────────── */
-  var ORDER = ['frame', 'casing', 'gears', 'shaft', 'motor', 'pump', 'wiring'];
+  var ORDER = ['frame', 'casing', 'gears', 'shaft', 'motor', 'pump', 'wiring', 'inspect'];
   var cards = [].slice.call(document.querySelectorAll('.mcard'));
   var leadSvg = document.getElementById('m3Leads');
   var subnavItems = document.querySelectorAll('#subnav li');
@@ -443,6 +443,31 @@
     });
   }
 
+  /* Theme inversion. Materials lift and the rim drops away, because the same
+     charcoal that reads as metal on black turns to mud on paper.            */
+  var BASE = [], LIGHT = [];
+  Object.keys(MAT).forEach(function (k) {
+    BASE.push(MAT[k].color.clone());
+    LIGHT.push(MAT[k].color.clone().lerp(new T.Color(0x9aa3ad), 0.62));
+  });
+  var matList = Object.keys(MAT).map(function (k) { return MAT[k]; });
+  var themeT = 0;
+
+  function setTheme(t) {
+    if (Math.abs(t - themeT) < 0.004) return;
+    themeT = t;
+    for (var i = 0; i < matList.length; i++) {
+      matList[i].color.copy(BASE[i]).lerp(LIGHT[i], t);
+    }
+    hemi.intensity   = 0.62 + t * 0.85;
+    key.intensity    = 1.65 + t * 1.15;
+    rimA.intensity   = 1.45 * (1 - t * 0.82);
+    rimB.intensity   = 0.85 * (1 - t * 0.82);
+    fill.intensity   = 0.55 + t * 0.35;
+    floorMat.opacity = 0.30 - t * 0.14;
+    document.body.classList.toggle('theme-light', t > 0.5);
+  }
+
   function setProgress(p) {
     scene.rotation.y = -0.72 + p * 0.86;          /* ~49 deg, always 3/4 */
     scene.rotation.x = -0.10 + Math.sin(p * Math.PI) * 0.10;
@@ -478,6 +503,14 @@
             : (document.querySelector('.mcard[data-key="' + ORDER[idx] + '"]') || {}).dataset.name;
     var bar = document.getElementById('m3Bar');
     if (bar) bar.style.setProperty('--mp', (p * 100).toFixed(1) + '%');
+
+    /* chapters five and six are the light block, with a fade either side */
+    var lo = 4 / 8, hi = 6 / 8, ramp = 0.055;
+    var t = Math.min(
+      utils.clamp((p - (lo - ramp)) / ramp, 0, 1),
+      utils.clamp(((hi + ramp) - p) / ramp, 0, 1)
+    );
+    setTheme(utils.clamp(t, 0, 1));
   }
 
   function frame() {
@@ -526,6 +559,18 @@
     setProgress(0);
     layout();
     frame();   /* size and paint once up front, before the first rAF tick */
+  }
+
+  /* once the chapters are done the machine gets out of the way of the content */
+  var chapters = document.getElementById('chapters');
+  var machineEl = document.getElementById('machine');
+  if (chapters && machineEl && !reduced) {
+    new ScrollObserverRef({
+      target: chapters,
+      enter: 'top top', leave: 'bottom bottom',
+      onLeave: function () { machineEl.classList.add('is-done'); },
+      onEnterBackward: function () { machineEl.classList.remove('is-done'); }
+    });
   }
 
   window.addEventListener('resize', function () { layout(); frame(); }, { passive: true });

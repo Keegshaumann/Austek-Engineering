@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=40">
+<link rel="stylesheet" href="assets/css/styles.css?v=43">
 </head>
 <body>
 
@@ -54,6 +54,10 @@
     <span class="mono mcard__n">07</span><h3>Install &amp; commission</h3>
     <p>Conduit, looms and control gear run in, then the set is turned over, checked and signed off on site.</p>
   </article>
+  <article class="mcard mcard--r" data-part="ctrl" data-key="inspect" data-name="Sign-off">
+    <span class="mono mcard__n">08</span><h3>Inspect &amp; hand over</h3>
+    <p>Welds checked, alignment logged, the job walked with the client and handed back running — the part nobody photographs.</p>
+  </article>
 </div>
 
 <div class="machine__hud mono">
@@ -70,6 +74,7 @@
     <li data-key="motor"><i></i><span>05 Motor &amp; coupling</span></li>
     <li data-key="pump"><i></i><span>06 Pipefitting</span></li>
     <li data-key="wiring"><i></i><span>07 Commissioning</span></li>
+    <li data-key="inspect"><i></i><span>08 Sign-off</span></li>
   </ol>
   <span class="subnav__pct" id="subnavPct">0%</span>
 </nav>
@@ -144,6 +149,19 @@
     <a class="hero__foot-r" href="#process">Scroll <span class="dn">↓</span></a>
   </div>
 </section>
+
+
+<!-- ════════════════ CHAPTERS · the scroll that drives the machine ════════ -->
+<div class="chapters" id="chapters">
+  <section class="chapter" data-key="frame"></section>
+  <section class="chapter" data-key="casing"></section>
+  <section class="chapter" data-key="gears"></section>
+  <section class="chapter" data-key="shaft"></section>
+  <section class="chapter chapter--light" data-key="motor"></section>
+  <section class="chapter chapter--light" data-key="pump"></section>
+  <section class="chapter" data-key="wiring"></section>
+  <section class="chapter" data-key="inspect"></section>
+</div>
 
 <!-- ══════════════════════════════════════ TICKER ═══════════════════════════ -->
 <div class="belt" aria-hidden="true">
@@ -454,9 +472,9 @@
   </div>
 </footer>
 
-<script src="assets/js/anime.umd.min.js?v=40"></script>
-<script src="assets/js/three.min.js?v=40"></script>
-<script src="assets/js/machine-gl.js?v=40"></script>
-<script src="assets/js/main.js?v=40"></script>
+<script src="assets/js/anime.umd.min.js?v=43"></script>
+<script src="assets/js/three.min.js?v=43"></script>
+<script src="assets/js/machine-gl.js?v=43"></script>
+<script src="assets/js/main.js?v=43"></script>
 </body>
 </html>
