@@ -251,6 +251,132 @@
     part(disc(30, 4, 40), BRIGHT, [316 + k2 * 7, 120, 0], 'wiring', [.3, 1, -.7], 1.6);
   }
 
+
+  /* ══════════════════════ moving parts ═══════════════════════════════════
+     Everything here runs off one clock, so the machine is alive whether or
+     not the page is being scrolled.                                        */
+  var MOVERS = [];
+  function mover(mesh, spec) { spec.m = mesh; MOVERS.push(spec); return mesh; }
+
+  var GLOW = new T.MeshStandardMaterial({
+    color: 0x1c1f22, metalness: 0.2, roughness: 0.5,
+    emissive: new T.Color(0xff7a2f), emissiveIntensity: 0.75
+  });
+  var GLOW_C = new T.MeshStandardMaterial({
+    color: 0x1c1f22, metalness: 0.2, roughness: 0.5,
+    emissive: new T.Color(0x49d8ff), emissiveIntensity: 0.6
+  });
+
+  /* ── planetary set, sitting in the forward cutaway ────────────────────── */
+  var PX = -150;
+  var Zs = 18, Zp = 12, Zr = 42, mod = 3.1;
+  var rs = Zs * mod / 2, rp = Zp * mod / 2, rr = Zr * mod / 2;
+
+  var sun = part(gearGeo(Zs, rs + 4, rs - 5, 26), BRIGHT, [PX, 0, 0], 'gears', [-1, .05, 0], 1.0);
+  sun.rotation.y = Math.PI / 2;
+  mover(sun, { spin: 1.0 });
+
+  var carrier = new T.Group();
+  carrier.position.set(PX, 0, 0);
+  scene.add(carrier);
+  mover(carrier, { spin: 0.30, axis: 'x' });
+
+  for (var pl = 0; pl < 3; pl++) {
+    var pa = pl / 3 * Math.PI * 2;
+    var pg = new T.Mesh(gearGeo(Zp, rp + 4, rp - 5, 24), BRIGHT);
+    pg.castShadow = true; pg.receiveShadow = true;
+    pg.rotation.y = Math.PI / 2;
+    pg.position.set(0, Math.sin(pa) * (rs + rp), Math.cos(pa) * (rs + rp));
+    carrier.add(pg);
+    mover(pg, { spin: -1.5, local: true });
+  }
+  /* ring gear the planets run inside */
+  part(disc(rr + 13, 26, 72), DEEP, [PX, 0, 0], 'gears', [-1, .05, 0], 1.0);
+  for (var rt = 0; rt < Zr; rt++) {
+    var ra = rt / Zr * Math.PI * 2;
+    part(new T.BoxGeometry(24, 5.4, 3.4), DEEP,
+         [PX, Math.sin(ra) * (rr - 1), Math.cos(ra) * (rr - 1)], 'gears', [-1, .05, 0], 1.0)
+      .rotation.x = -ra;
+  }
+
+  /* ── spur train in the aft cutaway ───────────────────────────────────── */
+  var TX = 60;
+  var trainSpec = [[20, 0, 0, 1.0], [13, 0, 1, -1.538], [16, 1, 0, 1.25]];
+  var tR = [];
+  trainSpec.forEach(function (g, i) { tR.push(g[0] * 3.0 / 2); });
+  var tPos = [
+    [0, 0],
+    [ (tR[0] + tR[1]) * Math.cos(0.6),  (tR[0] + tR[1]) * Math.sin(0.6) ],
+    [ (tR[0] + tR[1]) * Math.cos(0.6) + (tR[1] + tR[2]) * Math.cos(-0.7),
+      (tR[0] + tR[1]) * Math.sin(0.6) + (tR[1] + tR[2]) * Math.sin(-0.7) ]
+  ];
+  trainSpec.forEach(function (g, i) {
+    var m = part(gearGeo(g[0], tR[i] + 4, tR[i] - 5, 22), BRIGHT,
+                 [TX, tPos[i][1], tPos[i][0]], 'gears', [1, .1, .2], 1.05);
+    m.rotation.y = Math.PI / 2;
+    mover(m, { spin: g[3] * 0.85 });
+  });
+
+  /* ── crank and reciprocating rod ─────────────────────────────────────── */
+  var crankHub = new T.Group();
+  crankHub.position.set(190, 0, 0);
+  scene.add(crankHub);
+  mover(crankHub, { spin: 0.85, axis: 'x' });
+  var crankArm = new T.Mesh(new T.BoxGeometry(16, 74, 16), BRIGHT);
+  crankArm.position.set(0, 33, 0); crankArm.castShadow = true;
+  crankHub.add(crankArm);
+  var crankPin = new T.Mesh(new T.CylinderGeometry(9, 9, 40, 16), GLOW);
+  crankPin.rotation.z = Math.PI / 2;
+  crankPin.position.set(0, 66, 0);
+  crankHub.add(crankPin);
+
+  var rod = part(taper(11, 11, 150, 18), BRIGHT, [268, 0, 0], 'shaft', [1, .1, .1], 1.05);
+  mover(rod, { slide: { from: 242, to: 300, speed: 0.85 } });
+
+  /* ── impeller in the fin stack ───────────────────────────────────────── */
+  var imp = new T.Group();
+  imp.position.set(300, 0, 0);
+  scene.add(imp);
+  mover(imp, { spin: 2.4, axis: 'x' });
+  for (var bl = 0; bl < 11; bl++) {
+    var bA = bl / 11 * Math.PI * 2;
+    var blade = new T.Mesh(new T.BoxGeometry(9, 96, 26), DEEP);
+    blade.castShadow = true;
+    blade.position.set(0, Math.sin(bA) * 74, Math.cos(bA) * 74);
+    blade.rotation.set(-bA, 0, 0);
+    blade.rotateY(0.5);
+    imp.add(blade);
+  }
+
+  /* ── rotating knurled collar ─────────────────────────────────────────── */
+  var collar = new T.Group();
+  collar.position.set(-300, 0, 0);
+  scene.add(collar);
+  mover(collar, { spin: -0.42, axis: 'x' });
+  for (var kt = 0; kt < 64; kt++) {
+    var ka = kt / 64 * Math.PI * 2;
+    var tooth = new T.Mesh(new T.BoxGeometry(50, 7, 3.4), BODY);
+    tooth.castShadow = true;
+    tooth.position.set(0, Math.sin(ka) * 118, Math.cos(ka) * 118);
+    tooth.rotation.x = -ka;
+    collar.add(tooth);
+  }
+
+  /* ── tech accents: thin indicator rings and status dots ──────────────── */
+  function accentRing(r, tube, x, matr, key, dir, spread) {
+    var g = new T.TorusGeometry(r, tube, 8, 96);
+    g.rotateY(Math.PI / 2);
+    return part(g, matr, [x, 0, 0], key, dir, spread);
+  }
+  accentRing(118, 2.2, -266, GLOW_C, 'pump', [-1, .2, .25], 1.45);
+  accentRing(147, 2.4, -44,  GLOW,   'shaft', [.1, 1, .2], 1.25);
+  accentRing(160, 1.8, 176,  GLOW_C, 'motor', [1, .35, -.4], 1.4);
+  for (var d2 = 0; d2 < 8; d2++) {
+    var da = d2 / 8 * Math.PI * 2;
+    part(new T.CylinderGeometry(2.6, 2.6, 5, 10), d2 % 3 ? GLOW_C : GLOW,
+         [392, Math.sin(da) * 108, Math.cos(da) * 108], 'motor', [1, .4, -.45], 1.45);
+  }
+
   /* Axial explode. Radial scatter made the parts overlap into a blob; drawing
      them apart along the axis, further the further out they sit, reads as one
      assembly coming apart. The cover shells stay radial — they lift off. */
@@ -370,6 +496,18 @@
         idle = t.currentTime * 0.00055;
         gearBig.rotation.z = idle;
         pinion.rotation.z = -idle * 20 / 12;
+        for (var i = 0; i < MOVERS.length; i++) {
+          var mv = MOVERS[i];
+          if (mv.spin !== undefined) {
+            if (mv.axis === 'x') mv.m.rotation.x = idle * mv.spin;
+            else mv.m.rotation.z = idle * mv.spin;
+          }
+          if (mv.slide) {
+            var s0 = mv.slide;
+            mv.m.position.x = mv.m.userData.home.x +
+              Math.sin(idle * s0.speed) * ((s0.to - s0.from) / 2);
+          }
+        }
         frame();
       }
     });
