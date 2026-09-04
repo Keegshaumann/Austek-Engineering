@@ -23,7 +23,7 @@
 
   var scene = new T.Scene();
   var camera = new T.PerspectiveCamera(26, 1, 1, 6000);
-  camera.position.set(230, 620, 2150);   /* raised 3/4, long lens, framed to fit exploded */
+  camera.position.set(215, 560, 1960);   /* owns the frame, stays clear of the edges */
   camera.lookAt(-10, -30, 0);
 
   /* ── an environment so metal has something to reflect ──────────────────── */
@@ -32,14 +32,14 @@
     c.width = 128; c.height = 512;
     var g = c.getContext('2d');
     var grad = g.createLinearGradient(0, 0, 0, 128);
-    grad.addColorStop(0.00, '#9fb4c9');
-    grad.addColorStop(0.45, '#54606e');
-    grad.addColorStop(0.55, '#2b3138');
-    grad.addColorStop(1.00, '#14171a');
+    grad.addColorStop(0.00, '#3a424c');
+    grad.addColorStop(0.45, '#22272d');
+    grad.addColorStop(0.55, '#15181c');
+    grad.addColorStop(1.00, '#0c0e10');
     g.fillStyle = grad; g.fillRect(0, 0, 128, 512);
     /* a couple of soft highlights so metal has something to catch */
     var hl = g.createRadialGradient(64, 90, 4, 64, 90, 70);
-    hl.addColorStop(0, 'rgba(255,255,255,.85)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
+    hl.addColorStop(0, 'rgba(255,226,190,.55)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
     g.fillStyle = hl; g.fillRect(0, 0, 128, 220);
     var hl2 = g.createRadialGradient(20, 190, 2, 20, 190, 46);
     hl2.addColorStop(0, 'rgba(190,215,255,.5)'); hl2.addColorStop(1, 'rgba(190,215,255,0)');
@@ -50,31 +50,37 @@
     scene.environment = tex;
   })();
 
-  scene.add(new T.HemisphereLight(0xbcd2e8, 0x14171a, 0.55));
-  var key = new T.DirectionalLight(0xfff3e2, 2.4);
-  key.position.set(-380, 700, 460);
+  scene.add(new T.HemisphereLight(0x6f7d8c, 0x0e1013, 0.34));
+
+  /* key is deliberately soft — it models the form but does not define it */
+  var key = new T.DirectionalLight(0xdfe6ee, 0.85);
+  key.position.set(-420, 720, 520);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
-  key.shadow.radius = 4;
+  key.shadow.radius = 5;
   key.shadow.bias = -0.0015;
   var sc = key.shadow.camera;
-  sc.left = -700; sc.right = 700; sc.top = 700; sc.bottom = -700;
-  sc.near = 100; sc.far = 2200;
+  sc.left = -900; sc.right = 900; sc.top = 900; sc.bottom = -900;
+  sc.near = 100; sc.far = 4200;
   scene.add(key);
 
-  /* a floor the machine can actually sit on — catches the shadow, shows nothing else */
+  /* the rim does the work: warm, hard, from behind — this is the edge light
+     that makes every silhouette read against the dark ground */
+  var rimA = new T.DirectionalLight(0xffd9b0, 3.4);
+  rimA.position.set(-260, 300, -820); scene.add(rimA);
+  var rimB = new T.DirectionalLight(0xffc79a, 2.0);
+  rimB.position.set(520, 120, -640); scene.add(rimB);
+  var fill = new T.DirectionalLight(0x9fb6d4, 0.30);
+  fill.position.set(620, 60, 380); scene.add(fill);
+
   var floor = new T.Mesh(
-    new T.PlaneGeometry(3000, 3000),
-    new T.ShadowMaterial({ opacity: 0.42 })
+    new T.PlaneGeometry(4000, 4000),
+    new T.ShadowMaterial({ opacity: 0.30 })
   );
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -215;
   floor.receiveShadow = true;
   scene.add(floor);
-  var fill = new T.DirectionalLight(0x8fb4ff, 0.6);
-  fill.position.set(520, 180, 300); scene.add(fill);
-  var rim = new T.DirectionalLight(0xff9a4d, 0.85);
-  rim.position.set(240, 160, -560); scene.add(rim);
 
   /* ── materials ─────────────────────────────────────────────────────────── */
   function mat(color, metal, rough) {
@@ -82,18 +88,22 @@
       color: new T.Color(color), metalness: metal, roughness: rough
     });
   }
+  /* One body colour. The form is read through rim light and silhouette, not
+     through parts being different colours — that is what made it read as toys. */
+  var GRAPHITE = 0x2a2d31;
+  function body(v, rough) { return mat(v, 0.28, rough === undefined ? 0.52 : rough); }
   var MAT = {
-    frame:   mat(0x59636e, 0.85, 0.42),
-    dark:    mat(0x39424c, 0.80, 0.50),
-    casing:  mat(0x5d6b7a, 0.55, 0.42),
-    bronze:  mat(0xc4903f, 0.95, 0.26),
-    bronze2: mat(0xb0713a, 0.95, 0.30),
-    steel:   mat(0x99a3ad, 0.92, 0.22),
-    motor:   mat(0x2f4f74, 0.60, 0.40),
-    copper:  mat(0xb2622f, 0.90, 0.32),
-    green:   mat(0x3d6a62, 0.55, 0.45),
-    painted: mat(0x47524b, 0.25, 0.62),
-    loom:    mat(0x6b4a5e, 0.35, 0.60)
+    frame:   body(0x303338, 0.58),
+    dark:    body(0x25282c, 0.62),
+    casing:  body(0x33373c, 0.50),
+    bronze:  body(0x35383d, 0.44),
+    bronze2: body(0x303338, 0.46),
+    steel:   body(0x3a3e44, 0.38),
+    motor:   body(0x2b2e33, 0.55),
+    copper:  body(0x35383d, 0.46),
+    green:   body(0x2e3135, 0.54),
+    painted: body(0x282b2f, 0.66),
+    loom:    body(0x303338, 0.60)
   };
 
   /* ── geometry helpers ──────────────────────────────────────────────────── */
@@ -175,8 +185,8 @@
   part(new T.BoxGeometry(310, 24, 24), MAT.loom, [-120, 88, -125], 'wiring', [-.3, .9, -1], 1.5);
   part(new T.BoxGeometry(24, 135, 24), MAT.loom, [-270, 22, -125], 'wiring', [-.5, .85, -1], 1.5);
   part(new T.BoxGeometry(100, 132, 46), MAT.painted, [40, 100, -132], 'wiring', [.2, 1, -.9], 1.55);
-  ['#c2603f', '#c9a13c', '#4f8fbf', '#6fae74', '#9a6fbf'].forEach(function (c, i) {
-    part(new T.BoxGeometry(290, 6, 6), mat(new T.Color(c).getHex(), 0.2, 0.65),
+  ['#33373c', '#2f3236', '#36393e', '#2c2f33', '#34373c'].forEach(function (c, i) {
+    part(new T.BoxGeometry(290, 6, 6), mat(new T.Color(c).getHex(), 0.25, 0.6),
          [-120, 76 + i * 7, -108 + i * 4], 'wiring', [-.3, .9, -1], 1.58);
   });
 
@@ -323,8 +333,8 @@
     scene.rotation.y = -0.62 + p * Math.PI * 1.15;
     scene.rotation.x = -0.04 + Math.sin(p * Math.PI) * 0.12;
     explode = p < 0.12 ? 0
-            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 44
-            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 44;
+            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 34
+            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 34;
     spinT = p * Math.PI * 7;
 
     Object.keys(GROUPS).forEach(function (k) {
@@ -333,8 +343,7 @@
         m.position.copy(d.home).addScaledVector(d.dir, explode * d.spread);
       });
     });
-    gearBig.rotation.z = spinT;
-    pinion.rotation.z = -spinT * 20 / 12;
+
 
     var idx = Math.min(ORDER.length - 1, Math.floor(((p - 0.1) / 0.78) * ORDER.length));
     cards.forEach(function (c) {
@@ -367,9 +376,16 @@
       })
     });
     /* one render loop, always live */
+    /* the drive never stops — it turns whether or not the page is moving */
+    var idle = 0;
     A.createTimer({
       duration: 1e9, loop: true,
-      onUpdate: function () { frame(); }
+      onUpdate: function (t) {
+        idle = t.currentTime * 0.00055;
+        gearBig.rotation.z = idle;
+        pinion.rotation.z = -idle * 20 / 12;
+        frame();
+      }
     });
     setProgress(0);
     layout();
