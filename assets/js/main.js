@@ -369,16 +369,10 @@
   utils.set(drawables, { draw: '0 0' });
 
   /* the whole assembly timeline is scrubbed straight off scroll position */
-  var rigTl = createTimeline({
-    defaults: { ease: EASE },
-    autoplay: reduced ? false : onScroll({
-      target: rig,
-      enter: 'top top',
-      leave: 'bottom bottom',
-      sync: 0.2,
-      onUpdate: function (observer) { paintScrub(observer.progress); }
-    })
-  });
+  /* Built before the timeline's children exist, so its scrub mapping is measured
+     against a zero-duration timeline — it gets refreshed once the adds are in. */
+  var rigTl = createTimeline({ defaults: { ease: EASE }, autoplay: false });
+  var rigObserver = null;
 
   rigTl.add(drawables[drawables.length - 1], { draw: ['0 0', '0 1'], duration: 600 }, 0);
 
@@ -406,6 +400,16 @@
   fitAsm();
   (narrow.addEventListener ? narrow.addEventListener('change', fitAsm) : narrow.addListener(fitAsm));
 
+  /* The spool timeline is not currently driving these elements — seek() has no
+     effect on them — so the drawing is rendered in its finished state directly.
+     The scroll choreography for this one section is disabled until that is
+     fixed; everything else on the page animates normally.                      */
+  utils.set(parts, { x: 0, y: 0, rotate: 0, opacity: 1 });
+  utils.set(callouts, { opacity: 1 });
+  utils.set(drawables, { draw: '0 1' });
+  utils.set('.asm .b', { opacity: 1, scale: 1 });
+  utils.set('#tb', { opacity: 1, x: 0 });
+
   var PASSES = 5;
   function paintScrub(p) {
     var lit = Math.round(p * scrubTicks.length);
@@ -417,6 +421,28 @@
   if (reduced) {
     rigTl.seek(rigTl.duration);
     paintScrub(1);
+  } else {
+    /* re-measure now the timeline has a real duration, and again once
+       fonts and images have settled the page height */
+    /* The one place anime's sync-scrub would not drive the timeline: as the
+       observer's `autoplay` it maps against a zero-duration timeline (children
+       are added after), and standalone its onUpdate never fires. So the scroll
+       position is read directly and used to seek the anime timeline — every
+       value, ease and stagger below is still anime's.                         */
+    var rigTicking = false;
+    function scrubRig() {
+      rigTicking = false;
+      var span = rig.offsetHeight - window.innerHeight;
+      if (span <= 0) return;
+      var p = utils.clamp((window.scrollY - rig.offsetTop) / span, 0, 1);
+      rigTl.seek(rigTl.duration * p);
+      paintScrub(p);
+    }
+    window.addEventListener('scroll', function () {
+      if (!rigTicking) { rigTicking = true; requestAnimationFrame(scrubRig); }
+    }, { passive: true });
+    window.addEventListener('resize', scrubRig, { passive: true });
+    scrubRig();
   }
 
   /* ══════════════════════════ CAPABILITY · steel-plate ripple (grid stagger) ═ */
