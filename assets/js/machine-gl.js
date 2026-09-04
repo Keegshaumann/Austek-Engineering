@@ -180,6 +180,99 @@
          [-120, 76 + i * 7, -108 + i * 4], 'wiring', [-.3, .9, -1], 1.58);
   });
 
+
+  /* ── detail pass ───────────────────────────────────────────────────────
+     Primitives read as blocks. Machined parts read as machined because of
+     the small stuff: bolt heads, ribs, races, covers, chamfers.          */
+
+  function boltRing(n, r, pos, axis, key, dir, spread, head) {
+    head = head || 7;
+    for (var i = 0; i < n; i++) {
+      var a = i / n * Math.PI * 2;
+      var g = new T.CylinderGeometry(head, head, 9, 6);
+      var px = pos[0], py = pos[1], pz = pos[2];
+      if (axis === 'x') { g.rotateZ(Math.PI / 2); py += Math.sin(a) * r; pz += Math.cos(a) * r; }
+      else if (axis === 'y') { px += Math.cos(a) * r; pz += Math.sin(a) * r; }
+      else { g.rotateX(Math.PI / 2); px += Math.cos(a) * r; py += Math.sin(a) * r; }
+      part(g, MAT.steel, [px, py, pz], key, dir, spread);
+    }
+  }
+
+  /* gear lightening holes + hub bosses */
+  [[gearBig, -98, 110, 6, 46], [pinion, 80, 68, 5, 28]].forEach(function (cfg) {
+    var host = cfg[0], x = cfg[1], rOut = cfg[2], holes = cfg[3], rr = cfg[4];
+    var hub = new T.CylinderGeometry(rr * 0.62, rr * 0.62, 46, 20);
+    hub.rotateX(Math.PI / 2);
+    part(hub, MAT.bronze, [x, -26, 0], 'gears', host.userData.dir.toArray(), host.userData.spread);
+    for (var i = 0; i < holes; i++) {
+      var a = i / holes * Math.PI * 2;
+      var h = new T.CylinderGeometry(rOut * 0.17, rOut * 0.17, 42, 14);
+      h.rotateX(Math.PI / 2);
+      part(h, MAT.dark, [x + Math.cos(a) * rOut * 0.55, -26 + Math.sin(a) * rOut * 0.55, 0],
+           'gears', host.userData.dir.toArray(), host.userData.spread);
+    }
+  });
+
+  /* casing: ribs, inspection cover, mounting feet */
+  for (var rb = 0; rb < 5; rb++) {
+    part(new T.BoxGeometry(12, 225, 268), MAT.casing,
+         [-175 + rb * 68, -28, 0], 'casing', [0, .4, -1], 1.35);
+  }
+  part(new T.BoxGeometry(150, 96, 12), MAT.frame, [-40, 20, 130], 'casing', [0, .4, -1], 1.35);
+  boltRing(8, 54, [-40, 20, 137], 'z', 'casing', [0, .4, -1], 1.35, 5);
+  [[-160, 130], [-160, -130], [80, 130], [80, -130]].forEach(function (ft) {
+    part(new T.BoxGeometry(70, 26, 46), MAT.frame, [ft[0], -128, ft[1]], 'casing', [0, .4, -1], 1.35);
+  });
+
+  /* bearing caps and races */
+  [[-195, [-1, .15, .5]], [238, [1, .15, -.5]]].forEach(function (b) {
+    var race = new T.CylinderGeometry(30, 30, 56, 24);
+    race.rotateZ(Math.PI / 2);
+    part(race, MAT.steel, [b[0], -26, 0], 'shaft', b[1], 1.4);
+    var cap = new T.CylinderGeometry(44, 44, 12, 24);
+    cap.rotateZ(Math.PI / 2);
+    part(cap, MAT.dark, [b[0] + 30, -26, 0], 'shaft', b[1], 1.4);
+    boltRing(4, 33, [b[0] + 36, -26, 0], 'x', 'shaft', b[1], 1.4, 5);
+  });
+
+  /* motor: terminal box, fan cowl, feet, nameplate */
+  part(new T.BoxGeometry(86, 54, 74), MAT.painted, [-305, 66, 0], 'motor', [-1, .25, -.35], 1.45);
+  var cowl = new T.CylinderGeometry(66, 84, 46, 28);
+  cowl.rotateZ(Math.PI / 2);
+  part(cowl, MAT.dark, [-425, -26, 0], 'motor', [-1, .25, -.35], 1.45);
+  for (var v = 0; v < 10; v++) {
+    var av = v / 10 * Math.PI * 2;
+    part(new T.BoxGeometry(8, 34, 9), MAT.dark,
+         [-448, -26 + Math.sin(av) * 48, Math.cos(av) * 48], 'motor', [-1, .25, -.35], 1.45);
+  }
+  [[-250, 86], [-250, -86], [-360, 86], [-360, -86]].forEach(function (ft) {
+    part(new T.BoxGeometry(52, 22, 34), MAT.motor, [ft[0], -118, ft[1]], 'motor', [-1, .25, -.35], 1.45);
+  });
+  part(new T.BoxGeometry(46, 2, 30), MAT.steel, [-290, 40, 62], 'motor', [-1, .25, -.35], 1.45);
+
+  /* pump: volute, flanges bolted up, drain */
+  var volute = new T.TorusGeometry(74, 30, 12, 26);
+  part(volute, MAT.green, [272, -58, 0], 'pump', [1, .3, .6], 1.35);
+  boltRing(8, 46, [434, -58, 0], 'x', 'pump', [1, .45, .75], 1.45, 6);
+  boltRing(8, 40, [272, 158, 0], 'y', 'pump', [.3, 1, .55], 1.3, 6);
+  part(new T.CylinderGeometry(14, 14, 30, 12), MAT.steel, [272, -142, 0], 'pump', [1, .3, .6], 1.35);
+
+  /* frame: gussets and holding-down bolt heads */
+  [[-300, 148], [-300, -148], [300, 148], [300, -148]].forEach(function (gp) {
+    part(new T.BoxGeometry(46, 46, 10), MAT.frame, [gp[0], -120, gp[1]], 'frame', [0, -1, 0], 0.9);
+  });
+  for (var cm = 0; cm < 5; cm++) {
+    part(new T.BoxGeometry(22, 30, 300), MAT.frame,
+         [-260 + cm * 130, -150, 0], 'frame', [0, -1, 0], 0.9);
+  }
+
+  /* control box: door, hinges, gland plate */
+  part(new T.BoxGeometry(88, 118, 6), MAT.frame, [40, 100, -108], 'wiring', [.2, 1, -.9], 1.55);
+  [[152], [48]].forEach(function (hy) {
+    part(new T.CylinderGeometry(5, 5, 16, 10), MAT.steel, [-4, hy[0], -108], 'wiring', [.2, 1, -.9], 1.55);
+  });
+  boltRing(4, 34, [40, 30, -132], 'y', 'wiring', [.2, 1, -.9], 1.55, 4);
+
   /* ── scroll choreography ───────────────────────────────────────────────── */
   var ORDER = ['frame', 'casing', 'gears', 'shaft', 'motor', 'pump', 'wiring'];
   var cards = [].slice.call(document.querySelectorAll('.mcard'));
