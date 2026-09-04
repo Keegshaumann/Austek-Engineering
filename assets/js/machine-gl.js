@@ -13,7 +13,7 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── renderer ──────────────────────────────────────────────────────────── */
-  var renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  var renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = T.PCFSoftShadowMap;
@@ -23,7 +23,7 @@
 
   var scene = new T.Scene();
   var camera = new T.PerspectiveCamera(26, 1, 1, 6000);
-  camera.position.set(215, 560, 1960);   /* owns the frame, stays clear of the edges */
+  camera.position.set(215, 545, 2320);   /* holds the full explode inside the frame */
   camera.lookAt(-10, -30, 0);
 
   /* ── an environment so metal has something to reflect ──────────────────── */
@@ -50,10 +50,10 @@
     scene.environment = tex;
   })();
 
-  scene.add(new T.HemisphereLight(0x6f7d8c, 0x0e1013, 0.34));
+  scene.add(new T.HemisphereLight(0x8496a8, 0x101317, 0.62));
 
   /* key is deliberately soft — it models the form but does not define it */
-  var key = new T.DirectionalLight(0xdfe6ee, 0.85);
+  var key = new T.DirectionalLight(0xe8eef6, 1.65);
   key.position.set(-420, 720, 520);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
@@ -66,11 +66,11 @@
 
   /* the rim does the work: warm, hard, from behind — this is the edge light
      that makes every silhouette read against the dark ground */
-  var rimA = new T.DirectionalLight(0xffd9b0, 3.4);
+  var rimA = new T.DirectionalLight(0xffe9d4, 1.45);
   rimA.position.set(-260, 300, -820); scene.add(rimA);
-  var rimB = new T.DirectionalLight(0xffc79a, 2.0);
+  var rimB = new T.DirectionalLight(0xdfe7f2, 0.85);
   rimB.position.set(520, 120, -640); scene.add(rimB);
-  var fill = new T.DirectionalLight(0x9fb6d4, 0.30);
+  var fill = new T.DirectionalLight(0xa9bed8, 0.55);
   fill.position.set(620, 60, 380); scene.add(fill);
 
   var floor = new T.Mesh(
@@ -246,10 +246,28 @@
 
   /* cable gland + conduit off the rear */
   part(new T.CylinderGeometry(26, 26, 60, 24), DEEP, [330, 120, 0], 'wiring', [.3, 1, -.7], 1.6);
-  part(new T.CylinderGeometry(15, 15, 150, 20), BODY, [330, 190, 0], 'wiring', [.3, 1, -.7], 1.6);
+  part(new T.CylinderGeometry(15, 15, 96, 20), BODY, [318, 158, 0], 'wiring', [.3, 1, -.7], 1.6);
   for (var k2 = 0; k2 < 5; k2++) {
     part(disc(30, 4, 40), BRIGHT, [316 + k2 * 7, 120, 0], 'wiring', [.3, 1, -.7], 1.6);
   }
+
+  /* Axial explode. Radial scatter made the parts overlap into a blob; drawing
+     them apart along the axis, further the further out they sit, reads as one
+     assembly coming apart. The cover shells stay radial — they lift off. */
+  (function () {
+    var shells = GROUPS.casing || [];
+    scene.traverse(function (o) {
+      if (!o.isMesh || !o.userData.home) return;
+      var hx = o.userData.home.x;
+      if (shells.indexOf(o) >= 0) {
+        o.userData.dir = new T.Vector3(hx * 0.0016, 0.86, 0.5).normalize();
+        o.userData.spread = 2.1;
+        return;
+      }
+      o.userData.dir = new T.Vector3(hx >= 0 ? 1 : -1, 0.045, 0.03).normalize();
+      o.userData.spread = 0.45 + Math.abs(hx) / 330;
+    });
+  })();
 
   /* ── scroll choreography ───────────────────────────────────────────────── */
   var ORDER = ['frame', 'casing', 'gears', 'shaft', 'motor', 'pump', 'wiring'];
@@ -298,11 +316,11 @@
   }
 
   function setProgress(p) {
-    scene.rotation.y = -0.62 + p * Math.PI * 1.15;
-    scene.rotation.x = -0.04 + Math.sin(p * Math.PI) * 0.12;
+    scene.rotation.y = -0.72 + p * 0.86;          /* ~49 deg, always 3/4 */
+    scene.rotation.x = -0.10 + Math.sin(p * Math.PI) * 0.10;
     explode = p < 0.12 ? 0
-            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 34
-            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 34;
+            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 132
+            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 132;
     spinT = p * Math.PI * 7;
 
     Object.keys(GROUPS).forEach(function (k) {
