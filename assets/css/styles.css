@@ -506,10 +506,7 @@ body{background:var(--void)}
   position:fixed;inset:0;z-index:0;pointer-events:none;
   display:grid;place-items:center;
 }
-#machineSvg{
-  width:min(64vw,880px);height:auto;overflow:visible;
-  transform:translateX(17%);
-}
+
 /* keeps copy readable where it overlaps the drawing */
 .machine::after{
   content:"";position:absolute;inset:0;
@@ -535,43 +532,32 @@ main{position:relative;z-index:1}
 .cta__in{grid-template-columns:1fr}
 .form{max-width:520px}
 
-/* machine linework — steel monochrome; colour is reserved for the weld */
-.ph{opacity:0}
-.m-grid{fill:none;stroke:var(--fg);stroke-width:.6;opacity:.07}
-.m-cl{fill:none;stroke:var(--fg);stroke-width:.8;opacity:.24;stroke-dasharray:18 5 3 5}
-.m-dim{fill:none;stroke:var(--fg);stroke-width:.7;opacity:.34}
-.m-dimt{font-family:var(--m);font-size:12px;letter-spacing:.16em;fill:var(--fg);opacity:.45}
+/* ── the 3D machine ───────────────────────────────────────────────────── */
+#m3{width:min(78vw,1180px);height:auto;overflow:visible;filter:saturate(.92)}
+#m3 path{shape-rendering:geometricPrecision}
+.m3-lead{stroke:var(--fg);stroke-width:1;opacity:0;fill:none;
+  transition:opacity .35s ease}
 
-.m-ring{fill:none;stroke:var(--fg);stroke-width:.85;opacity:.30;stroke-linejoin:round}
-.m-ring--major{opacity:.52;stroke-width:1.1}
-.m-gen{fill:none;stroke:var(--fg);stroke-width:.7;opacity:.20}
-.m-edge{fill:none;stroke:var(--fg);stroke-width:1.7;opacity:.80}
-
-.m-seam{fill:none;stroke:var(--arc);stroke-width:2.2;opacity:.9;stroke-linecap:round}
-.m-bead{fill:none;stroke:var(--heat);stroke-width:1.5;opacity:.75;stroke-linecap:round}
-
-.m-face{fill:rgba(236,234,230,.028);stroke:var(--fg);stroke-width:1.05;opacity:.62;stroke-linejoin:round}
-.m-rib{fill:none;stroke:var(--fg);stroke-width:.8;opacity:.34}
-.m-saddle{fill:none;stroke:var(--fg);stroke-width:1.5;opacity:.7}
-.m-bolt{fill:var(--void);stroke:var(--fg);stroke-width:.9;opacity:.62}
-
-.m-noz{fill:none;stroke:var(--fg);stroke-width:1.2;opacity:.66}
-.m-flange{fill:none;stroke:var(--fg);stroke-width:1.4;opacity:.74}
-.m-pipe{fill:none;stroke:var(--fg);stroke-width:3.4;opacity:.66;stroke-linecap:round;stroke-linejoin:round}
-.m-fl{fill:none;stroke:var(--fg);stroke-width:1.6;opacity:.6;stroke-linecap:round}
-.m-spoke{fill:none;stroke:var(--fg);stroke-width:.9;opacity:.5}
-.m-fin{fill:none;stroke:var(--fg);stroke-width:.7;opacity:.3}
-
-.m-rail{fill:none;stroke:var(--fg);stroke-width:1.3;opacity:.6}
-.m-grate{fill:none;stroke:var(--fg);stroke-width:.6;opacity:.22}
-.m-rung{fill:none;stroke:var(--fg);stroke-width:1.1;opacity:.5}
-.m-cage{fill:none;stroke:var(--fg);stroke-width:.8;opacity:.3}
-
-.m-gauge{fill:var(--void);stroke:var(--fg);stroke-width:1.2;opacity:.75}
-.m-tick{fill:none;stroke:var(--fg);stroke-width:.8;opacity:.45}
-.m-needle{stroke:var(--arc);stroke-width:2;stroke-linecap:round;
-  transform-box:fill-box;transform-origin:50% 100%}
-.m-tag{font-family:var(--m);font-size:11px;letter-spacing:.17em;fill:var(--fg);opacity:.42}
+/* content that hangs off the parts */
+.mcards{position:absolute;inset:0;pointer-events:none}
+.mcard{
+  position:absolute;width:min(31vw,330px);
+  background:rgba(23,24,26,.82);backdrop-filter:blur(9px);
+  border:1px solid var(--hair);border-left:2px solid var(--arc);
+  padding:18px 20px;pointer-events:auto;
+  opacity:0;transform:translateY(14px);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.22,.68,.28,1);
+}
+.mcard.is-on{opacity:1;transform:translateY(0)}
+.mcard--l{left:clamp(16px,5vw,90px)}
+.mcard--r{right:clamp(16px,5vw,90px)}
+.mcard:nth-of-type(1){top:16%}   .mcard:nth-of-type(2){top:23%}
+.mcard:nth-of-type(3){top:34%}   .mcard:nth-of-type(4){top:41%}
+.mcard:nth-of-type(5){top:56%}   .mcard:nth-of-type(6){top:60%}
+.mcard:nth-of-type(7){top:70%}
+.mcard__n{display:block;color:var(--arc);margin-bottom:8px;font-size:.62rem}
+.mcard h3{font-size:1.12rem;margin-bottom:7px;letter-spacing:-.02em}
+.mcard p{margin:0;font-size:.86rem;line-height:1.55;color:var(--fg-dim)}
 
 /* progress readout */
 .machine__hud{
@@ -584,7 +570,10 @@ main{position:relative;z-index:1}
 .mhud__pct{font-variant-numeric:tabular-nums;min-width:4ch;text-align:right}
 
 @media (max-width:900px){
-  #machineSvg{width:112vw;transform:translateX(4%);opacity:.5}
+  #m3{width:132vw}
+  .mcard{width:min(74vw,300px);font-size:.9em}
+  .mcard--l,.mcard--r{left:50%;right:auto;transform:translateX(-50%) translateY(14px)}
+  .mcard.is-on{transform:translateX(-50%) translateY(0)}
   .machine::after{background:linear-gradient(180deg,rgba(23,24,26,.86),rgba(23,24,26,.72))}
   .machine__hud{bottom:12px}
 }
