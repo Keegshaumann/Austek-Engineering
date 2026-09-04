@@ -364,108 +364,86 @@
       return n;
     };
 
-    /* manway bolt circle */
-    var boltsG = document.getElementById('mBolts');
-    var mBolts = [];
-    for (var bi = 0; bi < 12; bi++) {
-      var ba = (bi / 12) * Math.PI * 2;
-      var bolt = mkEl('circle', {
-        class: 'm-p',
-        cx: (712 + Math.cos(ba) * 9).toFixed(1),
-        cy: (430 + Math.sin(ba) * 46).toFixed(1),
-        r: 3
-      });
-      boltsG.appendChild(bolt);
-      mBolts.push(bolt);
-    }
-
-    /* drive gears, generated so the teeth actually mesh */
-    function mGearPath(teeth, rOut, rRoot) {
-      var ap = Math.PI * 2 / teeth, d = '';
-      for (var i = 0; i < teeth; i++) {
-        var a = i * ap;
-        var pts = [[rRoot, a], [rOut, a + ap * 0.24], [rOut, a + ap * 0.5], [rRoot, a + ap * 0.74]];
-        for (var j = 0; j < 4; j++) {
-          d += (i === 0 && j === 0 ? 'M' : 'L') +
-               (Math.cos(pts[j][1]) * pts[j][0]).toFixed(2) + ' ' +
-               (Math.sin(pts[j][1]) * pts[j][0]).toFixed(2) + ' ';
-        }
-      }
-      return d + 'Z';
-    }
-
-    var mGears = [];
-    ['mGearA', 'mGearB'].forEach(function (id) {
-      var g = document.getElementById(id);
-      var teeth = +g.dataset.teeth, r = +g.dataset.r;
-      g.setAttribute('transform', 'translate(' + g.dataset.cx + ',' + g.dataset.cy + ')');
-      var spin = mkEl('g', {});
-      spin.appendChild(mkEl('path', { class: 'm-gear-body', d: mGearPath(teeth, r, r * 0.86) }));
-      spin.appendChild(mkEl('circle', { class: 'm-gear-hub', r: r * 0.34, cx: 0, cy: 0 }));
-      spin.appendChild(mkEl('rect', { class: 'm-gear-hub', x: -2, y: -r * 0.34 - 4, width: 4, height: 10 }));
-      g.appendChild(spin);
-      mGears.push({ spin: spin, teeth: teeth });
-    });
-
-    var seamPaths = [
-      svg.createDrawable('#seamLong'),
-      svg.createDrawable('#seamC1'),
-      svg.createDrawable('#seamC2')
-    ];
-    var pipeDraw = svg.createDrawable('#pipeRun');
-    var phases = ['#ph1', '#ph2', '#ph3', '#ph4', '#ph5', '#ph6', '#ph7', '#ph8'];
+    var seamDraw = svg.createDrawable('#ph3 .m-seam');
+    var pipeDraw = svg.createDrawable('#ph6 .m-pipe');
 
     var STAGES = [
-      '01 · Setting out',   '02 · Rolling the shell', '03 · Welding out',
-      '04 · Frame & saddles', '05 · Nozzles & manway', '06 · Pipework',
-      '07 · Drive & pump',  '08 · Commissioned'
+      '01 \u00b7 Setting out',   '02 \u00b7 Rolling the shell', '03 \u00b7 Welding out',
+      '04 \u00b7 Skid & saddles', '05 \u00b7 Nozzles & manway', '06 \u00b7 Pipework',
+      '07 \u00b7 Pump & drive',  '08 \u00b7 Commissioned'
     ];
 
     var mStage = document.getElementById('mStage');
     var mPct = document.getElementById('mPct');
     var mBar = document.getElementById('mBar');
 
-    /* one master timeline; every phase owns a slice of the page */
+    /* one master timeline; each phase owns a slice of the page */
     var mt = createTimeline({ defaults: { ease: EASE }, autoplay: false });
 
-    mt.add('#ph1', { opacity: [0, 1], duration: 300 }, 0)
-      .add('#ph1 .m-dim, #ph1 .m-dimt', { opacity: [0, .6], y: [8, 0], duration: 400, delay: stagger(60) }, 100);
+    /* 01 — setting out */
+    mt.add('#ph1', { opacity: [0, 1], duration: 200 }, 0)
+      .add('#ph1 .m-grid', { opacity: [0, .07], duration: 400, delay: stagger(14) }, 40)
+      .add('#ph1 .m-cl', { opacity: [0, .24], duration: 400, delay: stagger(90) }, 240)
+      .add('#ph1 .m-dim, #ph1 .m-dimt', { opacity: [0, .4], duration: 360, delay: stagger(60) }, 380);
 
-    mt.add('#ph2', { opacity: [0, 1], duration: 200 }, 500)
-      .add('#ph2 .m-p', { opacity: [0, .85], scaleY: [0.15, 1], duration: 700, delay: stagger(70) }, 520);
+    /* 02 — the shell is rolled: rings first, then the skin lines */
+    mt.add('#ph2', { opacity: [0, 1], duration: 150 }, 700)
+      .add('#ph2 .m-ring', { opacity: [0, .3], scale: [.6, 1], duration: 520, delay: stagger(26) }, 720)
+      .add('#ph2 .m-gen', { opacity: [0, .2], duration: 420, delay: stagger(18) }, 1080)
+      .add('#ph2 .m-edge', { opacity: [0, .8], duration: 480 }, 1180);
 
-    mt.add('#ph3', { opacity: [0, 1], duration: 150 }, 1200)
-      .add(seamPaths, { draw: ['0 0', '0 1'], duration: 700, delay: stagger(200) }, 1220)
-      .add('#mArc', { opacity: [0, 1, 0], scale: [0.4, 1.6], duration: 900 }, 1240);
+    /* 03 — seams run, weld caps ripple in behind the arc */
+    mt.add('#ph3', { opacity: [0, 1], duration: 120 }, 1500)
+      .add(seamDraw, { draw: ['0 0', '0 1'], duration: 900, delay: stagger(160) }, 1520)
+      .add('#ph3 .m-bead', { opacity: [0, .75], scale: [.4, 1], duration: 300, delay: stagger(26) }, 1620)
+      .add('#mArc', { opacity: [0, 1, 0], scale: [.5, 1.8], duration: 1100 }, 1540);
 
-    mt.add('#ph4', { opacity: [0, 1], duration: 200 }, 2000)
-      .add('#ph4 .m-p', { opacity: [0, .85], y: [26, 0], duration: 600, delay: stagger(80) }, 2020);
+    /* 04 — skid, saddles, holding-down bolts */
+    mt.add('#ph4', { opacity: [0, 1], duration: 150 }, 2300)
+      .add('#ph4 .m-face', { opacity: [0, .62], y: [22, 0], duration: 500, delay: stagger(24) }, 2320)
+      .add('#ph4 .m-saddle, #ph4 .m-rib', { opacity: [0, .5], duration: 420, delay: stagger(20) }, 2600)
+      .add('#ph4 .m-bolt', { opacity: [0, .62], scale: [0, 1], duration: 300, delay: stagger(50) }, 2760);
 
-    mt.add('#ph5', { opacity: [0, 1], duration: 200 }, 2800)
-      .add('#ph5 .m-p', { opacity: [0, .85], scale: [0.5, 1], duration: 500, delay: stagger(45) }, 2820);
+    /* 05 — nozzles and the manway bolt-up */
+    mt.add('#ph5', { opacity: [0, 1], duration: 150 }, 3000)
+      .add('#ph5 .m-noz', { opacity: [0, .66], scaleY: [.2, 1], duration: 420, delay: stagger(16) }, 3020)
+      .add('#ph5 .m-flange', { opacity: [0, .74], duration: 360, delay: stagger(20) }, 3220)
+      .add('#ph5 .m-bolt', { opacity: [0, .62], rotate: [-90, 0], duration: 300, delay: stagger(22) }, 3360);
 
-    mt.add('#ph6', { opacity: [0, 1], duration: 150 }, 3600)
-      .add(pipeDraw, { draw: ['0 0', '0 1'], duration: 900 }, 3620)
-      .add('#ph6 .m-fl', { opacity: [0, .6], duration: 300, delay: stagger(120) }, 3900);
+    /* 06 — pipework routed and flanged up */
+    mt.add('#ph6', { opacity: [0, 1], duration: 120 }, 3700)
+      .add(pipeDraw, { draw: ['0 0', '0 1'], duration: 900 }, 3720)
+      .add('#ph6 .m-fl, #ph6 .m-bolt', { opacity: [0, .6], duration: 300, delay: stagger(26) }, 4100)
+      .add('#ph6 .m-noz, #ph6 .m-spoke', { opacity: [0, .6], duration: 360, delay: stagger(22) }, 4260);
 
-    mt.add('#ph7', { opacity: [0, 1], duration: 200 }, 4500)
-      .add('#ph7 .m-p, #ph7 .m-shaft', { opacity: [0, .85], x: [-20, 0], duration: 600, delay: stagger(70) }, 4520);
+    /* 07 — pump and drive land on the skid */
+    mt.add('#ph7', { opacity: [0, 1], duration: 150 }, 4600)
+      .add('#ph7 .m-face', { opacity: [0, .62], x: [-26, 0], duration: 520, delay: stagger(30) }, 4620)
+      .add('#ph7 .m-fin', { opacity: [0, .3], duration: 300, delay: stagger(14) }, 4860)
+      .add('#ph7 .m-noz, #ph7 .m-bolt', { opacity: [0, .62], duration: 340, delay: stagger(18) }, 4980);
 
-    mt.add('#ph8', { opacity: [0, 1], duration: 300 }, 5300)
-      .add('#mNeedle', { rotate: [0, 138], duration: 900, ease: 'out(3)' }, 5320);
+    /* 08 — access steel, instruments, tag plates */
+    mt.add('#ph8', { opacity: [0, 1], duration: 150 }, 5300)
+      .add('#ph8 .m-rail', { opacity: [0, .6], duration: 420, delay: stagger(26) }, 5320)
+      .add('#ph8 .m-grate', { opacity: [0, .22], duration: 300, delay: stagger(12) }, 5480)
+      .add('#ph8 .m-rung, #ph8 .m-cage', { opacity: [0, .45], x: [-14, 0], duration: 340, delay: stagger(16) }, 5600)
+      .add('#ph8 .m-gauge, #ph8 .m-tick', { opacity: [0, .6], duration: 360, delay: stagger(10) }, 5860)
+      .add('#mNeedle', { rotate: [0, 138], duration: 900, ease: 'out(3)' }, 5980)
+      .add('#ph8 .m-tag', { opacity: [0, .42], duration: 400, delay: stagger(90) }, 6060);
 
     if (reduced) {
       mt.seek(mt.duration);
       mStage.textContent = STAGES[STAGES.length - 1];
       mPct.textContent = '100%';
     } else {
-      /* gears keep turning once the drive is in */
+      /* the rig is live: the gauge needle breathes around its set point */
+      var needle = document.getElementById('mNeedle');
       A.createTimer({
-        duration: 30000, loop: true,
+        duration: 5200, loop: true,
         onUpdate: function (self) {
-          var turn = (self.currentTime / 30000) * 360;
-          utils.set(mGears[0].spin, { rotate: turn });
-          utils.set(mGears[1].spin, { rotate: -turn * mGears[0].teeth / mGears[1].teeth });
+          if (mt.currentTime < mt.duration * 0.94) return;
+          var t = self.currentTime / 5200 * Math.PI * 2;
+          utils.set(needle, { rotate: 138 + Math.sin(t) * 3.4 + Math.sin(t * 3.3) * 1.1 });
         }
       });
 
