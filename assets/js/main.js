@@ -103,168 +103,7 @@
       + '&body=' + encodeURIComponent(body);
   });
 
-  /* ══════════════════════════════ HERO: self-erecting steel platform ══════ */
-  var buildSvg = document.getElementById('build');
-  var hatch    = document.getElementById('bHatch');
-  var weldsG   = document.getElementById('bWelds');
-  var statusEl = document.getElementById('bStatus');
-  var statusTx = document.getElementById('bStatusTxt');
-
-  function svgEl(tag, attrs) {
-    var el = document.createElementNS(SVGNS, tag);
-    for (var k in attrs) el.setAttribute(k, attrs[k]);
-    return el;
-  }
-
-  /* ground hatching under the base line */
-  for (var h = 0; h < 34; h++) {
-    var hx = 46 + h * 16;
-    hatch.appendChild(svgEl('line', {
-      x1: hx, y1: 556, x2: hx - 11, y2: 570, class: 'b-hatch'
-    }));
-  }
-
-  /* every welded joint on the frame */
-  var JOINTS = [
-    [150, 528], [470, 528],            /* column bases            */
-    [150, 214], [470, 214],            /* column / main beam      */
-    [150, 384], [470, 384],            /* column / walkway        */
-    [176, 522], [444, 522],            /* lower brace feet        */
-    [310, 400],                        /* lower brace apex        */
-    [176, 224], [444, 224],            /* upper brace feet        */
-    [310, 370]                         /* upper brace apex        */
-  ];
-
-  var flashes = [], sparks = [];
-  JOINTS.forEach(function (j) {
-    var g = svgEl('g', {});
-    var f = svgEl('circle', { cx: j[0], cy: j[1], r: 26, fill: 'url(#flash)', class: 'b-flash' });
-    g.appendChild(f);
-    flashes.push(f);
-    for (var a = 0; a < 5; a++) {
-      var ang = (a * 72 + utils.random(-18, 18)) * Math.PI / 180;
-      var sp = svgEl('line', {
-        x1: j[0], y1: j[1],
-        x2: (j[0] + Math.cos(ang) * 20).toFixed(1),
-        y2: (j[1] + Math.sin(ang) * 20).toFixed(1),
-        class: 'b-spark'
-      });
-      g.appendChild(sp);
-      sparks.push(sp);
-    }
-    weldsG.appendChild(g);
-  });
-
-  /* flashes grouped by the build stage that creates them */
-  function jointsAt(idx) { return idx.map(function (i) { return flashes[i]; }); }
-  function sparksAt(idx) {
-    var out = [];
-    idx.forEach(function (i) { out = out.concat(sparks.slice(i * 5, i * 5 + 5)); });
-    return out;
-  }
-
-  var stage = function (el) { return Array.prototype.slice.call(document.querySelectorAll('[data-stage="' + el + '"]')); };
-
   if (!reduced) {
-    utils.set('.b-flash', { scale: 0, opacity: 0 });
-    utils.set('#bGround, #bHatch line', { opacity: 0 });
-
-    /* ---- weld helper: flash + spark burst at a set of joints -------------- */
-    var weld = function (tl, idx, at) {
-      tl.add(jointsAt(idx), {
-        scale: [0.2, 1.9], opacity: [0, 1, 0],
-        duration: 620, ease: 'out(3)', delay: stagger(60)
-      }, at);
-      tl.add(sparksAt(idx), {
-        opacity: [0, .95, 0],
-        duration: 520, ease: 'out(2)', delay: stagger(14)
-      }, at + 40);
-      return tl;
-    };
-
-    var say = function (txt) { return function () { statusTx.textContent = txt; }; };
-
-    var bt = createTimeline({ defaults: { ease: EASE } });
-
-    /* 00 · site */
-    bt.add('#bGround', { opacity: [0, .32], duration: 500 }, 0)
-      .add('#bHatch line', { opacity: [0, .14], duration: 400, delay: stagger(14) }, 120)
-      .add(statusEl, { opacity: [0, 1], duration: 500 }, 120);
-
-    /* 01 · base plates drop in */
-    bt.add(stage(0), {
-      opacity: [0, 1], scale: [.4, 1], y: [-26, 0],
-      duration: 640, delay: stagger(110), onBegin: say('Setting base plates')
-    }, 420);
-    weld(bt, [0, 1], 1000);
-
-    /* 02 · columns rise */
-    bt.add(stage(1), {
-      opacity: [0, 1], scaleY: [0, 1],
-      duration: 900, delay: stagger(150), ease: 'out(3)', onBegin: say('Raising columns')
-    }, 1180);
-
-    /* 03 · main beam extends across */
-    bt.add(stage(2), {
-      opacity: [0, 1], scaleX: [0, 1],
-      duration: 800, ease: 'out(3)', onBegin: say('Landing the main beam')
-    }, 2020);
-    weld(bt, [2, 3], 2720);
-
-    /* 04 · gussets */
-    bt.add(stage(3), {
-      opacity: [0, 1], scale: [0, 1],
-      duration: 480, delay: stagger(90), onBegin: say('Fitting gussets')
-    }, 2860);
-
-    /* 05 · walkway beam */
-    bt.add(stage(4), {
-      opacity: [0, 1], scaleX: [0, 1],
-      duration: 760, ease: 'out(3)', onBegin: say('Hanging the walkway')
-    }, 3200);
-    weld(bt, [4, 5], 3860);
-
-    /* 06 · bracing shoots in */
-    var braces = stage(5).concat(stage(6)).map(function (g) {
-      return svg.createDrawable(g.querySelector('path'));
-    });
-    utils.set(braces, { draw: '0 0' });
-    bt.add(stage(5).concat(stage(6)), { opacity: [0, 1], duration: 120, onBegin: say('Bracing the frame') }, 4020);
-    bt.add(braces, { draw: ['0 0', '0 1'], duration: 620, delay: stagger(130), ease: 'out(3)' }, 4020);
-    weld(bt, [6, 7, 8, 9, 10, 11], 4680);
-
-    /* 07 · handrail */
-    bt.add(stage(7), {
-      opacity: [0, 1], scaleY: [0, 1],
-      duration: 500, delay: stagger(80), ease: 'out(3)', onBegin: say('Standing the handrail')
-    }, 4900);
-
-    var rails = stage(8).map(function (g) { return svg.createDrawable(g.querySelector('path')); });
-    utils.set(rails, { draw: '0 0' });
-    bt.add(stage(8), { opacity: [0, 1], duration: 100 }, 5320);
-    bt.add(rails, { draw: ['0 0', '0 1'], duration: 620, delay: stagger(140), ease: 'out(3)' }, 5320);
-
-    /* 08 · signed off — the frame stays standing */
-    bt.add(statusEl, { opacity: [1, 1], duration: 10, onBegin: say('Welded out · signed off') }, 6060);
-
-    /* it keeps breathing once it's up: the joints tick over on a slow loop */
-    animate(flashes, {
-      scale: [{ to: 1.5 }, { to: 0.2 }],
-      opacity: [{ to: .5 }, { to: 0 }],
-      duration: 1500,
-      ease: 'out(3)',
-      delay: stagger(230),
-      loop: true,
-      loopDelay: 2600
-    });
-
-    /* re-run the erection sequence when you come back to the top */
-    new ScrollObserver({
-      target: '.hero',
-      enter: 'top top',
-      onEnterBackward: function () { if (bt.completed) bt.restart(); }
-    });
-
     /* ─────────────────────────────────────────────────────── hero copy in ── */
     utils.set('.hero__grid, .hero__specs li, .hero__foot > *', { opacity: 0 });
     utils.set('.hero__specs', { opacity: 1 });
@@ -340,110 +179,6 @@
       onUpdate: function () { el.textContent = utils.round(o.v, 0) + sfx; }
     }), el);
   });
-
-  /* ─────────────────────────── scroll-scrubbed spool assembly (the rig) ─── */
-  var rig = document.getElementById('process');
-  var parts = Array.prototype.slice.call(document.querySelectorAll('.asm .pt'));
-  var callouts = Array.prototype.slice.call(document.querySelectorAll('.asm .co'));
-  var leaders = Array.prototype.slice.call(document.querySelectorAll('.asm .ld'));
-  var centre = document.querySelectorAll('#asmCl path');
-  var scrubBar = document.getElementById('scrubBar');
-  var scrubLbl = document.getElementById('scrubLbl');
-
-  for (var t = 0; t < 22; t++) scrubBar.appendChild(document.createElement('i'));
-  var scrubTicks = Array.prototype.slice.call(scrubBar.children);
-
-  /* set exploded start state */
-  var SPREAD = 0.5; /* keeps exploded parts inside the drawing frame */
-  parts.forEach(function (p) {
-    var dx = (+p.dataset.dx || 0) * SPREAD;
-    var dy = (+p.dataset.dy || 0) * SPREAD;
-    p.dataset.ex = dx + ',' + dy;
-    utils.set(p, { x: dx, y: dy, opacity: 0.22, rotate: dx > 0 ? 4 : -4 });
-  });
-  utils.set(callouts, { opacity: 0 });
-
-  var drawables = leaders.concat(Array.prototype.slice.call(centre)).map(function (p) {
-    return svg.createDrawable(p);
-  });
-  utils.set(drawables, { draw: '0 0' });
-
-  /* the whole assembly timeline is scrubbed straight off scroll position */
-  /* Built before the timeline's children exist, so its scrub mapping is measured
-     against a zero-duration timeline — it gets refreshed once the adds are in. */
-  var rigTl = createTimeline({ defaults: { ease: EASE }, autoplay: false });
-  var rigObserver = null;
-
-  rigTl.add(drawables[drawables.length - 1], { draw: ['0 0', '0 1'], duration: 600 }, 0);
-
-  parts.forEach(function (p, idx) {
-    rigTl.add(p, {
-      x: 0, y: 0, rotate: 0, opacity: 1, duration: 900
-    }, 200 + idx * 130);
-  });
-
-  callouts.forEach(function (c, idx) {
-    var at = 1500 + idx * 300;
-    rigTl.add(c, { opacity: [0, 1], duration: 260 }, at);
-    rigTl.add(drawables[idx], { draw: ['0 0', '0 1'], duration: 560 }, at);
-  });
-
-  rigTl.add('.asm .b', { opacity: [0, 1], scale: [.6, 1], duration: 500, delay: stagger(120) }, 1400);
-  rigTl.add('#tb', { opacity: [0, 1], translateX: [16, 0], duration: 700 }, 2600);
-
-  /* on small screens crop the drawing to the spool and drop the annotations */
-  var asmEl = document.getElementById('asm');
-  var narrow = window.matchMedia('(max-width: 820px)');
-  function fitAsm() {
-    asmEl.setAttribute('viewBox', narrow.matches ? '54 52 950 356' : '0 0 1600 470');
-  }
-  fitAsm();
-  (narrow.addEventListener ? narrow.addEventListener('change', fitAsm) : narrow.addListener(fitAsm));
-
-  /* The spool timeline is not currently driving these elements — seek() has no
-     effect on them — so the drawing is rendered in its finished state directly.
-     The scroll choreography for this one section is disabled until that is
-     fixed; everything else on the page animates normally.                      */
-  utils.set(parts, { x: 0, y: 0, rotate: 0, opacity: 1 });
-  utils.set(callouts, { opacity: 1 });
-  utils.set(drawables, { draw: '0 1' });
-  utils.set('.asm .b', { opacity: 1, scale: 1 });
-  utils.set('#tb', { opacity: 1, x: 0 });
-
-  var PASSES = 5;
-  function paintScrub(p) {
-    var lit = Math.round(p * scrubTicks.length);
-    scrubTicks.forEach(function (tk, i) { tk.classList.toggle('on', i < lit); });
-    var pass = Math.min(PASSES, Math.max(1, Math.ceil(p * PASSES) || 1));
-    scrubLbl.textContent = 'PASS 0' + pass + ' / 0' + PASSES;
-  }
-
-  if (reduced) {
-    rigTl.seek(rigTl.duration);
-    paintScrub(1);
-  } else {
-    /* re-measure now the timeline has a real duration, and again once
-       fonts and images have settled the page height */
-    /* The one place anime's sync-scrub would not drive the timeline: as the
-       observer's `autoplay` it maps against a zero-duration timeline (children
-       are added after), and standalone its onUpdate never fires. So the scroll
-       position is read directly and used to seek the anime timeline — every
-       value, ease and stagger below is still anime's.                         */
-    var rigTicking = false;
-    function scrubRig() {
-      rigTicking = false;
-      var span = rig.offsetHeight - window.innerHeight;
-      if (span <= 0) return;
-      var p = utils.clamp((window.scrollY - rig.offsetTop) / span, 0, 1);
-      rigTl.seek(rigTl.duration * p);
-      paintScrub(p);
-    }
-    window.addEventListener('scroll', function () {
-      if (!rigTicking) { rigTicking = true; requestAnimationFrame(scrubRig); }
-    }, { passive: true });
-    window.addEventListener('resize', scrubRig, { passive: true });
-    scrubRig();
-  }
 
   /* ══════════════════════════ CAPABILITY · steel-plate ripple (grid stagger) ═ */
   var plate = document.getElementById('plate');
@@ -619,173 +354,142 @@
   }
 
 
-  /* ═══════════════════════════ MECHANISM · gear train ═════════════════════ */
-  var gearSvg = document.getElementById('gearSvg');
-  if (gearSvg) {
-    var mk = function (tag, attrs) {
+
+  /* ══════════════ THE MACHINE · one build, driven by whole-page scroll ═════ */
+  var machineSvg = document.getElementById('machineSvg');
+  if (machineSvg) {
+    var mkEl = function (tag, attrs) {
       var n = document.createElementNS(SVGNS, tag);
       for (var k in attrs) n.setAttribute(k, attrs[k]);
       return n;
     };
 
-    /* trapezoidal tooth profile swept around the pitch circle */
-    function gearPath(teeth, rOut, rRoot) {
+    /* manway bolt circle */
+    var boltsG = document.getElementById('mBolts');
+    var mBolts = [];
+    for (var bi = 0; bi < 12; bi++) {
+      var ba = (bi / 12) * Math.PI * 2;
+      var bolt = mkEl('circle', {
+        class: 'm-p',
+        cx: (712 + Math.cos(ba) * 9).toFixed(1),
+        cy: (430 + Math.sin(ba) * 46).toFixed(1),
+        r: 3
+      });
+      boltsG.appendChild(bolt);
+      mBolts.push(bolt);
+    }
+
+    /* drive gears, generated so the teeth actually mesh */
+    function mGearPath(teeth, rOut, rRoot) {
       var ap = Math.PI * 2 / teeth, d = '';
       for (var i = 0; i < teeth; i++) {
         var a = i * ap;
-        var pts = [[rRoot, a], [rOut, a + ap * 0.22], [rOut, a + ap * 0.52], [rRoot, a + ap * 0.74]];
+        var pts = [[rRoot, a], [rOut, a + ap * 0.24], [rOut, a + ap * 0.5], [rRoot, a + ap * 0.74]];
         for (var j = 0; j < 4; j++) {
-          var x = (Math.cos(pts[j][1]) * pts[j][0]).toFixed(2);
-          var y = (Math.sin(pts[j][1]) * pts[j][0]).toFixed(2);
-          d += (i === 0 && j === 0 ? 'M' : 'L') + x + ' ' + y + ' ';
+          d += (i === 0 && j === 0 ? 'M' : 'L') +
+               (Math.cos(pts[j][1]) * pts[j][0]).toFixed(2) + ' ' +
+               (Math.sin(pts[j][1]) * pts[j][0]).toFixed(2) + ' ';
         }
       }
       return d + 'Z';
     }
 
-    var gears = [];
-    ['gearA', 'gearB', 'gearC'].forEach(function (id) {
-      var outer = document.getElementById(id);
-      var teeth = +outer.dataset.teeth, r = +outer.dataset.r;
-      outer.setAttribute('transform', 'translate(' + outer.dataset.cx + ',' + outer.dataset.cy + ')');
-
-      var rRoot = r * 0.87, rHub = r * 0.44, rBore = r * 0.17;
-      var spin = mk('g', { class: 'gear-spin' });
-
-      spin.appendChild(mk('path', { class: 'gear-body', d: gearPath(teeth, r, rRoot) }));
-      spin.appendChild(mk('circle', { class: 'gear-hub', r: rHub, cx: 0, cy: 0 }));
-      for (var sp = 0; sp < 6; sp++) {
-        var a = sp * Math.PI / 3;
-        spin.appendChild(mk('line', {
-          class: 'gear-spoke',
-          x1: (Math.cos(a) * rBore).toFixed(1), y1: (Math.sin(a) * rBore).toFixed(1),
-          x2: (Math.cos(a) * rHub).toFixed(1),  y2: (Math.sin(a) * rHub).toFixed(1)
-        }));
-      }
-      /* keyway so the rotation is actually readable */
-      spin.appendChild(mk('rect', { class: 'gear-key', x: -2.5, y: -rHub - 4, width: 5, height: 11, rx: 1 }));
-      spin.appendChild(mk('circle', { class: 'gear-bore', r: rBore, cx: 0, cy: 0 }));
-
-      outer.appendChild(mk('circle', { class: 'gear-pitch', r: r * 0.93, cx: 0, cy: 0 }));
-      outer.appendChild(spin);
-      gears.push({ spin: spin, teeth: teeth });
+    var mGears = [];
+    ['mGearA', 'mGearB'].forEach(function (id) {
+      var g = document.getElementById(id);
+      var teeth = +g.dataset.teeth, r = +g.dataset.r;
+      g.setAttribute('transform', 'translate(' + g.dataset.cx + ',' + g.dataset.cy + ')');
+      var spin = mkEl('g', {});
+      spin.appendChild(mkEl('path', { class: 'm-gear-body', d: mGearPath(teeth, r, r * 0.86) }));
+      spin.appendChild(mkEl('circle', { class: 'm-gear-hub', r: r * 0.34, cx: 0, cy: 0 }));
+      spin.appendChild(mkEl('rect', { class: 'm-gear-hub', x: -2, y: -r * 0.34 - 4, width: 4, height: 10 }));
+      g.appendChild(spin);
+      mGears.push({ spin: spin, teeth: teeth });
     });
 
-    /* ratios are inverse to tooth count, and every mesh reverses direction */
-    var TA = gears[0].teeth, TB = gears[1].teeth, TC = gears[2].teeth;
-    var hudRev = document.getElementById('hudRev');
-    var hudRatio = document.getElementById('hudRatio');
-    hudRatio.textContent = '1 : ' + (TA / TC).toFixed(2);
+    var seamPaths = [
+      svg.createDrawable('#seamLong'),
+      svg.createDrawable('#seamC1'),
+      svg.createDrawable('#seamC2')
+    ];
+    var pipeDraw = svg.createDrawable('#pipeRun');
+    var phases = ['#ph1', '#ph2', '#ph3', '#ph4', '#ph5', '#ph6', '#ph7', '#ph8'];
 
-    var scrollDeg = 0, jogDeg = 0, idleDeg = 0;
-    function applyGears() {
-      var a = scrollDeg + jogDeg + idleDeg;
-      utils.set(gears[0].spin, { rotate: a });
-      utils.set(gears[1].spin, { rotate: -a * TA / TB });
-      utils.set(gears[2].spin, { rotate:  a * TA / TC });
-      hudRev.textContent = (a / 360).toFixed(2);
-    }
+    var STAGES = [
+      '01 · Setting out',   '02 · Rolling the shell', '03 · Welding out',
+      '04 · Frame & saddles', '05 · Nozzles & manway', '06 · Pipework',
+      '07 · Drive & pump',  '08 · Commissioned'
+    ];
 
-    if (!reduced) {
-      /* 1 · scroll drives the train */
-      var driver = { a: 0 };
-      animate(driver, {
-        a: [0, 540],
-        ease: 'linear',
-        duration: 1000,
-        onUpdate: function () { scrollDeg = driver.a; applyGears(); },
-        autoplay: onScroll({
-          target: '#mechanism',
-          enter: 'bottom top',
-          leave: 'top bottom',
-          sync: true
-        })
-      });
+    var mStage = document.getElementById('mStage');
+    var mPct = document.getElementById('mPct');
+    var mBar = document.getElementById('mBar');
 
-      /* 2 · Timer keeps a slow idle turn so it is never dead on screen */
+    /* one master timeline; every phase owns a slice of the page */
+    var mt = createTimeline({ defaults: { ease: EASE }, autoplay: false });
+
+    mt.add('#ph1', { opacity: [0, 1], duration: 300 }, 0)
+      .add('#ph1 .m-dim, #ph1 .m-dimt', { opacity: [0, .6], y: [8, 0], duration: 400, delay: stagger(60) }, 100);
+
+    mt.add('#ph2', { opacity: [0, 1], duration: 200 }, 500)
+      .add('#ph2 .m-p', { opacity: [0, .85], scaleY: [0.15, 1], duration: 700, delay: stagger(70) }, 520);
+
+    mt.add('#ph3', { opacity: [0, 1], duration: 150 }, 1200)
+      .add(seamPaths, { draw: ['0 0', '0 1'], duration: 700, delay: stagger(200) }, 1220)
+      .add('#mArc', { opacity: [0, 1, 0], scale: [0.4, 1.6], duration: 900 }, 1240);
+
+    mt.add('#ph4', { opacity: [0, 1], duration: 200 }, 2000)
+      .add('#ph4 .m-p', { opacity: [0, .85], y: [26, 0], duration: 600, delay: stagger(80) }, 2020);
+
+    mt.add('#ph5', { opacity: [0, 1], duration: 200 }, 2800)
+      .add('#ph5 .m-p', { opacity: [0, .85], scale: [0.5, 1], duration: 500, delay: stagger(45) }, 2820);
+
+    mt.add('#ph6', { opacity: [0, 1], duration: 150 }, 3600)
+      .add(pipeDraw, { draw: ['0 0', '0 1'], duration: 900 }, 3620)
+      .add('#ph6 .m-fl', { opacity: [0, .6], duration: 300, delay: stagger(120) }, 3900);
+
+    mt.add('#ph7', { opacity: [0, 1], duration: 200 }, 4500)
+      .add('#ph7 .m-p, #ph7 .m-shaft', { opacity: [0, .85], x: [-20, 0], duration: 600, delay: stagger(70) }, 4520);
+
+    mt.add('#ph8', { opacity: [0, 1], duration: 300 }, 5300)
+      .add('#mNeedle', { rotate: [0, 138], duration: 900, ease: 'out(3)' }, 5320);
+
+    if (reduced) {
+      mt.seek(mt.duration);
+      mStage.textContent = STAGES[STAGES.length - 1];
+      mPct.textContent = '100%';
+    } else {
+      /* gears keep turning once the drive is in */
       A.createTimer({
-        duration: 24000,
-        loop: true,
+        duration: 30000, loop: true,
         onUpdate: function (self) {
-          idleDeg = (self.currentTime / 24000) * 360;
-          applyGears();
+          var turn = (self.currentTime / 30000) * 360;
+          utils.set(mGears[0].spin, { rotate: turn });
+          utils.set(mGears[1].spin, { rotate: -turn * mGears[0].teeth / mGears[1].teeth });
         }
       });
 
-      /* 3 · Draggable jog wheel as a manual drive input */
-      var jogEl = document.getElementById('jogHandle');
-      if (jogEl && A.createDraggable) {
-        A.createDraggable(jogEl, {
-          y: false,
-          container: document.getElementById('jog'),
-          releaseStiffness: 40,
-          releaseDamping: 12,
-          onUpdate: function (self) {
-            jogDeg = self.x * 1.6;
-            applyGears();
-          }
-        });
-      }
-      applyGears();
-    }
-  }
-
-  /* ═══════════════════════════ WELD PASSES · cross-section ════════════════ */
-  var weldSvg = document.getElementById('weldSvg');
-  if (weldSvg) {
-    var beadsG = document.getElementById('weldBeads');
-    var labelsG = document.getElementById('weldLabels');
-    var svgNS = SVGNS;
-
-    var PASSES_SEQ = [
-      { n: 'Root',   cy: 243, rx: 44, ry: 12, c: 'var(--p-cyan)' },
-      { n: 'Hot',    cy: 221, rx: 54, ry: 13, c: 'var(--p-teal)' },
-      { n: 'Fill 1', cy: 197, rx: 64, ry: 14, c: 'var(--p-lime)' },
-      { n: 'Fill 2', cy: 171, rx: 76, ry: 15, c: 'var(--p-amber)' },
-      { n: 'Cap',    cy: 140, rx: 94, ry: 18, c: 'var(--p-orange)' }
-    ];
-
-    var beads = [], labels = [];
-    PASSES_SEQ.forEach(function (pass, i) {
-      var e = document.createElementNS(svgNS, 'ellipse');
-      e.setAttribute('class', 'w-bead');
-      e.setAttribute('cx', 450); e.setAttribute('cy', pass.cy);
-      e.setAttribute('rx', pass.rx); e.setAttribute('ry', pass.ry);
-      e.setAttribute('fill', pass.c);
-      beadsG.appendChild(e);
-      beads.push(e);
-
-      var ly = pass.cy;
-      var lead = document.createElementNS(svgNS, 'path');
-      lead.setAttribute('class', 'w-lead');
-      lead.setAttribute('d', 'M' + (450 + pass.rx + 8) + ' ' + ly + ' H' + (700 + i * 6));
-      labelsG.appendChild(lead);
-
-      var t = document.createElementNS(svgNS, 'text');
-      t.setAttribute('class', 'w-lbl');
-      t.setAttribute('x', 708 + i * 6); t.setAttribute('y', ly + 4);
-      t.textContent = String(i + 1).padStart(2, '0') + ' · ' + pass.n;
-      labelsG.appendChild(t);
-      labels.push(t);
-      labels.push(lead);
-    });
-
-    if (reduced) {
-      utils.set(beads, { opacity: 1, scaleY: 1 });
-      utils.set(labels, { opacity: 1 });
-    } else {
-      var weldTl = createTimeline({ defaults: { ease: EASE }, autoplay: false });
-      beads.forEach(function (b, i) {
-        weldTl.add(b, {
-          opacity: [0, 1],
-          scaleY: [0, 1],
-          duration: 520
-        }, i * 420);
-        weldTl.add([labels[i * 2], labels[i * 2 + 1]], {
-          opacity: [0, 1], duration: 340
-        }, i * 420 + 220);
+      /* page scroll is the crank: 0 at the top, 1 at the bottom */
+      var mProg = { v: 0 };
+      animate(mProg, {
+        v: [0, 1],
+        ease: 'linear',
+        duration: 1000,
+        onUpdate: function () {
+          var p = utils.clamp(mProg.v, 0, 1);
+          mt.seek(mt.duration * p);
+          var idx = Math.min(STAGES.length - 1, Math.floor(p * STAGES.length));
+          mStage.textContent = STAGES[idx];
+          mPct.textContent = Math.round(p * 100) + '%';
+          mBar.style.setProperty('--mp', (p * 100).toFixed(1) + '%');
+        },
+        autoplay: onScroll({
+          target: document.documentElement,
+          enter: 'top top',
+          leave: 'bottom bottom',
+          sync: true
+        })
       });
-      revealOnScroll(weldTl, weldSvg);
     }
   }
 

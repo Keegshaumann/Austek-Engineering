@@ -13,11 +13,112 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=12">
+<link rel="stylesheet" href="assets/css/styles.css?v=15">
 </head>
 <body>
 
 <a class="skip" href="#main">Skip to content</a>
+
+<!-- ══════════════ THE MACHINE · fixed centrepiece, driven by page scroll ═══ -->
+<div class="machine" id="machine" aria-hidden="true">
+  <svg id="machineSvg" viewBox="0 0 1000 940" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <radialGradient id="mHeat">
+        <stop offset="0%" stop-color="#fff3d6" stop-opacity=".95"/>
+        <stop offset="35%" stop-color="#ffcf7a" stop-opacity=".5"/>
+        <stop offset="100%" stop-color="#ff7b3a" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 01 · setting out -->
+    <g class="ph" id="ph1">
+      <path class="m-cl" d="M110 430 H890"/>
+      <path class="m-cl" d="M500 130 V830"/>
+      <path class="m-dim" d="M288 150 H712 M288 142 V158 M712 142 V158"/>
+      <text class="m-dimt" x="500" y="134" text-anchor="middle">4 000 OD</text>
+      <path class="m-dim" d="M150 300 V560 M142 300 H158 M142 560 H158"/>
+      <text class="m-dimt" x="176" y="434">2 600</text>
+    </g>
+
+    <!-- 02 · rolled shell + dished ends -->
+    <g class="ph" id="ph2">
+      <path class="m-p" d="M340 300 H660"/>
+      <path class="m-p" d="M340 560 H660"/>
+      <path class="m-p" d="M340 300 C 300 300 288 332 288 430 C 288 528 300 560 340 560"/>
+      <path class="m-p" d="M660 300 C 700 300 712 332 712 430 C 712 528 700 560 660 560"/>
+      <path class="m-f" d="M340 300 H660 V560 H340 Z"/>
+    </g>
+
+    <!-- 03 · weld seams -->
+    <g class="ph" id="ph3">
+      <path class="m-seam" id="seamLong" d="M340 300 H660"/>
+      <path class="m-seam" id="seamC1" d="M446 300 V560"/>
+      <path class="m-seam" id="seamC2" d="M554 300 V560"/>
+      <circle class="m-arc" id="mArc" cx="340" cy="300" r="26" fill="url(#mHeat)" opacity="0"/>
+    </g>
+
+    <!-- 04 · saddles + structural frame -->
+    <g class="ph" id="ph4">
+      <path class="m-p" d="M372 560 L392 648 H468 L448 560 Z"/>
+      <path class="m-p" d="M628 560 L608 648 H532 L552 560 Z"/>
+      <rect class="m-p" x="280" y="648" width="440" height="26"/>
+      <rect class="m-p" x="300" y="674" width="34" height="88"/>
+      <rect class="m-p" x="666" y="674" width="34" height="88"/>
+      <rect class="m-p" x="252" y="762" width="130" height="18"/>
+      <rect class="m-p" x="618" y="762" width="130" height="18"/>
+      <path class="m-l" d="M300 674 L334 708 M700 674 L666 708"/>
+    </g>
+
+    <!-- 05 · nozzles, manway, bolt circles -->
+    <g class="ph" id="ph5">
+      <rect class="m-p" x="406" y="264" width="30" height="36"/>
+      <rect class="m-p" x="396" y="252" width="50" height="12"/>
+      <rect class="m-p" x="566" y="264" width="30" height="36"/>
+      <rect class="m-p" x="556" y="252" width="50" height="12"/>
+      <ellipse class="m-p" cx="712" cy="430" rx="15" ry="56"/>
+      <g id="mBolts"></g>
+      <rect class="m-p" x="484" y="560" width="32" height="40"/>
+      <rect class="m-p" x="474" y="600" width="52" height="12"/>
+    </g>
+
+    <!-- 06 · discharge pipework -->
+    <g class="ph" id="ph6">
+      <path class="m-pipe" id="pipeRun" d="M500 612 V690 Q500 716 526 716 H770 Q796 716 796 742 V772"/>
+      <path class="m-fl" d="M486 660 H514 M486 668 H514"/>
+      <path class="m-fl" d="M640 702 V730 M648 702 V730"/>
+      <path class="m-fl" d="M782 750 H810 M782 758 H810"/>
+    </g>
+
+    <!-- 07 · pump + gear drive -->
+    <g class="ph" id="ph7">
+      <rect class="m-p" x="744" y="772" width="104" height="56" rx="4"/>
+      <rect class="m-p" x="736" y="828" width="120" height="14"/>
+      <g id="mGearA" class="m-gear" data-teeth="18" data-r="52" data-cx="238" data-cy="742"></g>
+      <g id="mGearB" class="m-gear" data-teeth="12" data-r="35" data-cx="325" data-cy="742"></g>
+      <path class="m-shaft" d="M325 742 H744"/>
+      <circle class="m-p" cx="238" cy="742" r="6"/>
+    </g>
+
+    <!-- 08 · commissioned -->
+    <g class="ph" id="ph8">
+      <circle class="m-gauge" cx="612" cy="252" r="26"/>
+      <path class="m-needle" id="mNeedle" d="M612 252 L612 232"/>
+      <circle class="m-p" cx="612" cy="252" r="2.5"/>
+      <text class="m-tag" x="646" y="248">PT-01</text>
+      <text class="m-tag" x="646" y="264">6 BAR</text>
+      <text class="m-tag" x="252" y="812">DRIVE</text>
+      <text class="m-tag" x="756" y="864">P-101</text>
+    </g>
+  </svg>
+
+  <div class="machine__hud mono">
+    <span class="mhud__stage" id="mStage">01 · Setting out</span>
+    <span class="mhud__bar" id="mBar"></span>
+    <span class="mhud__pct" id="mPct">0%</span>
+  </div>
+</div>
+
+
 
 <!-- ══════════════════════════════════════════ NAV ══════════════════════════ -->
 <header class="nav" id="nav">
@@ -78,60 +179,6 @@
     </ul>
   </div>
 
-  <!-- self-erecting steel platform -->
-  <div class="hero__stage" aria-hidden="true">
-    <svg class="bld" id="build" viewBox="0 0 620 620">
-      <defs>
-        <radialGradient id="flash">
-          <stop offset="0%"   stop-color="#fff6e0" stop-opacity=".95"/>
-          <stop offset="30%"  stop-color="#ffb427" stop-opacity=".55"/>
-          <stop offset="100%" stop-color="#ff5b1a" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-
-      <!-- ground -->
-      <path class="b-ground" id="bGround" d="M46 556 H574"/>
-      <g id="bHatch"></g>
-
-      <!-- 01 · base plates -->
-      <g class="b-part b-pop" data-stage="0"><rect class="b-s" x="104" y="530" width="92" height="16"/></g>
-      <g class="b-part b-pop" data-stage="0"><rect class="b-s" x="424" y="530" width="92" height="16"/></g>
-
-      <!-- 02 · columns -->
-      <g class="b-part b-rise" data-stage="1"><rect class="b-s" x="126" y="212" width="48" height="318"/><path class="b-l" d="M150 212 V530"/></g>
-      <g class="b-part b-rise" data-stage="1"><rect class="b-s" x="446" y="212" width="48" height="318"/><path class="b-l" d="M470 212 V530"/></g>
-
-      <!-- 03 · main beam -->
-      <g class="b-part b-ext-l" data-stage="2"><rect class="b-s" x="104" y="170" width="412" height="42"/><path class="b-l" d="M104 191 H516"/></g>
-
-      <!-- 04 · gussets -->
-      <g class="b-part b-pop" data-stage="3"><path class="b-s" d="M126 212 L126 252 L166 212 Z"/></g>
-      <g class="b-part b-pop" data-stage="3"><path class="b-s" d="M494 212 L494 252 L454 212 Z"/></g>
-
-      <!-- 05 · walkway beam -->
-      <g class="b-part b-ext-r" data-stage="4"><rect class="b-s" x="150" y="372" width="320" height="26"/><path class="b-l" d="M150 385 H470"/></g>
-
-      <!-- 06 · bracing -->
-      <g class="b-part" data-stage="5"><path class="b-br" d="M176 524 L306 402"/></g>
-      <g class="b-part" data-stage="5"><path class="b-br" d="M444 524 L314 402"/></g>
-      <g class="b-part" data-stage="6"><path class="b-br" d="M176 222 L306 368"/></g>
-      <g class="b-part" data-stage="6"><path class="b-br" d="M444 222 L314 368"/></g>
-
-      <!-- 07 · handrail -->
-      <g class="b-part b-rise" data-stage="7"><path class="b-p" d="M172 372 V282"/></g>
-      <g class="b-part b-rise" data-stage="7"><path class="b-p" d="M266 372 V282"/></g>
-      <g class="b-part b-rise" data-stage="7"><path class="b-p" d="M360 372 V282"/></g>
-      <g class="b-part b-rise" data-stage="7"><path class="b-p" d="M454 372 V282"/></g>
-      <g class="b-part" data-stage="8"><path class="b-rail" d="M162 282 H464"/></g>
-      <g class="b-part" data-stage="8"><path class="b-rail" d="M162 328 H464"/></g>
-
-      <!-- weld flashes (generated) -->
-      <g id="bWelds"></g>
-    </svg>
-
-    <p class="mono b-status" id="bStatus"><i class="led"></i><span id="bStatusTxt">Setting base plates</span></p>
-  </div>
-
   <div class="hero__foot mono">
     <div class="hero__foot-l">
       <span class="dot dot--arc"></span>Live sites — Heineken, Sedibeng<span class="sep">/</span>Edward Snell &amp; Co, Isando
@@ -158,103 +205,6 @@
       <p class="rig__note">A spool doesn&rsquo;t come together in one go. It&rsquo;s cut, fitted, tacked, rooted, filled and signed off — each pass done properly before the next one starts.</p>
     </div>
 
-    <div class="rig__stage">
-      <svg class="asm" id="asm" viewBox="0 0 1600 470" aria-label="Exploded pipe spool assembling">
-        <g class="asm__cl" id="asmCl">
-          <path d="M40 235 H1010" />
-        </g>
-
-        <!-- LEFT FLANGE ASSEMBLY -->
-        <g class="pt" data-dx="-560" data-dy="-40">
-          <rect class="s" x="112" y="112" width="9" height="246"/>
-          <path class="h" d="M112 130 l9 -14 M112 160 l9 -14 M112 190 l9 -14 M112 220 l9 -14 M112 250 l9 -14 M112 280 l9 -14 M112 310 l9 -14 M112 340 l9 -14"/>
-        </g>
-        <g class="pt" data-dx="-430" data-dy="40">
-          <rect class="s" x="121" y="112" width="27" height="246"/>
-          <path class="s" d="M148 141 L200 172 V298 L148 329 Z"/>
-          <circle class="s o" cx="134" cy="134" r="7"/>
-          <circle class="s o" cx="134" cy="186" r="7"/>
-          <circle class="s o" cx="134" cy="284" r="7"/>
-          <circle class="s o" cx="134" cy="336" r="7"/>
-        </g>
-
-        <!-- PIPE A -->
-        <g class="pt" data-dx="-190" data-dy="-190">
-          <rect class="s" x="200" y="172" width="272" height="126"/>
-          <path class="l" d="M200 186 H472 M200 284 H472"/>
-        </g>
-
-        <!-- WELD A -->
-        <g class="pt bead" data-dx="0" data-dy="-250">
-          <path class="b" d="M469 172 q9 8 0 16 q9 8 0 16 q9 8 0 16 q9 8 0 16 q9 8 0 16 q9 8 0 16 q9 8 0 16 q9 8 0 14"/>
-        </g>
-
-        <!-- REDUCER -->
-        <g class="pt" data-dx="150" data-dy="200">
-          <path class="s" d="M472 172 L578 192 V278 L472 298 Z"/>
-          <path class="l" d="M472 186 L578 202 M472 284 L578 268"/>
-        </g>
-
-        <!-- PIPE B -->
-        <g class="pt" data-dx="330" data-dy="-160">
-          <rect class="s" x="578" y="192" width="282" height="86"/>
-          <path class="l" d="M578 204 H860 M578 266 H860"/>
-        </g>
-
-        <!-- WELD B -->
-        <g class="pt bead" data-dx="0" data-dy="250">
-          <path class="b" d="M857 192 q9 7 0 14 q9 7 0 14 q9 7 0 14 q9 7 0 14 q9 7 0 14 q9 7 0 16"/>
-        </g>
-
-        <!-- BRANCH STUB -->
-        <g class="pt" data-dx="60" data-dy="-260">
-          <rect class="s" x="668" y="86" width="72" height="108"/>
-          <path class="l" d="M680 86 V194 M728 86 V194"/>
-          <rect class="s" x="656" y="66" width="96" height="20"/>
-          <path class="b" d="M664 194 q10 -6 0 -12 M744 194 q-10 -6 0 -12"/>
-        </g>
-
-        <!-- RIGHT FLANGE -->
-        <g class="pt" data-dx="520" data-dy="60">
-          <path class="s" d="M860 192 L912 160 V310 L860 278 Z"/>
-          <rect class="s" x="912" y="132" width="27" height="206"/>
-          <circle class="s o" cx="925" cy="152" r="7"/>
-          <circle class="s o" cx="925" cy="200" r="7"/>
-          <circle class="s o" cx="925" cy="270" r="7"/>
-          <circle class="s o" cx="925" cy="318" r="7"/>
-        </g>
-        <g class="pt" data-dx="640" data-dy="-60">
-          <rect class="s" x="939" y="132" width="9" height="206"/>
-          <path class="h" d="M939 150 l9 -14 M939 180 l9 -14 M939 210 l9 -14 M939 240 l9 -14 M939 270 l9 -14 M939 300 l9 -14 M939 330 l9 -14"/>
-        </g>
-
-        <!-- BOLTS -->
-        <g class="pt" data-dx="-120" data-dy="-300"><rect class="s" x="88" y="128" width="12" height="12"/><rect class="s" x="72" y="131" width="16" height="6"/></g>
-        <g class="pt" data-dx="-120" data-dy="300"><rect class="s" x="88" y="330" width="12" height="12"/><rect class="s" x="72" y="333" width="16" height="6"/></g>
-        <g class="pt" data-dx="420" data-dy="-300"><rect class="s" x="960" y="146" width="12" height="12"/><rect class="s" x="972" y="149" width="16" height="6"/></g>
-        <g class="pt" data-dx="420" data-dy="300"><rect class="s" x="960" y="312" width="12" height="12"/><rect class="s" x="972" y="315" width="16" height="6"/></g>
-
-        <!-- CALLOUTS — routed into the free margins, drawing-office style -->
-        <g class="co"><path class="ld" d="M134 362 V424 H206"/><text class="mono" x="214" y="428">01 · Cut &amp; prep</text></g>
-        <g class="co"><path class="ld" d="M336 168 V92 H406"/><text class="mono" x="414" y="96">02 · Fit-up &amp; tack</text></g>
-        <g class="co"><path class="ld" d="M472 302 V424 H544"/><text class="mono" x="552" y="428">03 · TIG root pass</text></g>
-        <g class="co"><path class="ld" d="M719 188 V96 H786"/><text class="mono" x="794" y="100">04 · Fill &amp; cap</text></g>
-        <g class="co"><path class="ld" d="M925 342 V424 H1004"/><text class="mono" x="1012" y="428">05 · Inspect &amp; sign-off</text></g>
-
-        <!-- TITLE BLOCK -->
-        <g class="tb" id="tb">
-          <rect x="1088" y="116" width="470" height="196"/>
-          <path d="M1088 152 H1558 M1088 184 H1558 M1088 216 H1558 M1088 248 H1558 M1088 280 H1558 M1236 116 V312"/>
-          <text class="mono k" x="1104" y="140">Item</text>      <text class="mono v" x="1252" y="140">Fabricated pipe spool</text>
-          <text class="mono k" x="1104" y="172">Material</text>  <text class="mono v" x="1252" y="172">Stainless / carbon steel</text>
-          <text class="mono k" x="1104" y="204">Weld</text>      <text class="mono v" x="1252" y="204">Root · fill · cap</text>
-          <text class="mono k" x="1104" y="236">By</text>        <text class="mono v" x="1252" y="236">Coded welder</text>
-          <text class="mono k" x="1104" y="268">Site</text>      <text class="mono v" x="1252" y="268">Gauteng</text>
-          <text class="mono k" x="1104" y="300">Firm</text>      <text class="mono v hl" x="1252" y="300">Austek Engineering CC</text>
-        </g>
-      </svg>
-    </div>
-
     <div class="scrub mono" id="scrub">
       <span class="scrub__lbl" id="scrubLbl">PASS 01 / 05</span>
       <div class="scrub__bar" id="scrubBar"></div>
@@ -272,23 +222,6 @@
     <p class="stage__note">Every drive train we fabricate or repair comes down to the same thing: teeth that mesh, loads that transfer, tolerances that hold. Drag the jog wheel to turn it over.</p>
   </div>
 
-  <div class="wrap stage__vis">
-    <svg id="gearSvg" viewBox="0 0 900 560" aria-hidden="true">
-      <g id="gearA" class="gear" data-teeth="24" data-r="104" data-cx="220" data-cy="300" style="--g:var(--p-cyan)"></g>
-      <g id="gearB" class="gear" data-teeth="16" data-r="70"  data-cx="394" data-cy="300" style="--g:var(--p-amber)"></g>
-      <g id="gearC" class="gear" data-teeth="32" data-r="138" data-cx="602" data-cy="300" style="--g:var(--p-lime)"></g>
-      <g id="gearMarks"></g>
-    </svg>
-  </div>
-
-  <div class="wrap mech__hud mono">
-    <div class="hud"><i style="--g:var(--p-cyan)"></i>Drive<b id="hudA">24T</b></div>
-    <div class="hud"><i style="--g:var(--p-amber)"></i>Idler<b id="hudB">16T</b></div>
-    <div class="hud"><i style="--g:var(--p-lime)"></i>Output<b id="hudC">32T</b></div>
-    <div class="hud hud--wide">Ratio<b id="hudRatio">1 : 0.75</b></div>
-    <div class="hud hud--wide">Revolutions<b id="hudRev">0.00</b></div>
-    <div class="jog" id="jog" title="Drag to drive"><span class="jog__t"></span><span class="jog__h" id="jogHandle"></span></div>
-  </div>
 </section>
 
 <!-- ═══════════════════════════ WELD PASSES · cross-section ═════════════════ -->
@@ -299,18 +232,6 @@
     <p class="stage__note">A coded weld isn&rsquo;t one run of the torch. The groove is filled in sequence — each pass cleaned and checked before the next goes down.</p>
   </div>
 
-  <div class="wrap stage__vis">
-    <svg id="weldSvg" viewBox="0 0 900 420" aria-hidden="true">
-      <!-- parent plates, bevelled to a V -->
-      <path class="w-plate" d="M40 250 H360 L440 130 V90 H40 Z"/>
-      <path class="w-plate" d="M860 250 H540 L460 130 V90 H860 Z"/>
-      <path class="w-root" d="M360 250 H540"/>
-      <g id="weldBeads"></g>
-      <g id="weldLabels"></g>
-    </svg>
-  </div>
-
-  <div class="wrap mono stage__cap">Butt joint · single-V groove</div>
 </section>
 
 <!-- ══════════════════════════════════════ CAPABILITY ═══════════════════════ -->
@@ -575,7 +496,7 @@
   </div>
 </footer>
 
-<script src="assets/js/anime.umd.min.js?v=12"></script>
-<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/anime.umd.min.js?v=15"></script>
+<script src="assets/js/main.js?v=15"></script>
 </body>
 </html>

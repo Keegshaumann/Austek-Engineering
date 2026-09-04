@@ -498,3 +498,76 @@ select option{background:var(--void);color:var(--fg)}
   .hud{font-size:.6rem}
   .jog{flex-basis:100%}
 }
+
+/* ══════════════════════ THE MACHINE · fixed centrepiece ══════════════════ */
+body{background:var(--void)}
+
+.machine{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  display:grid;place-items:center;
+}
+#machineSvg{
+  width:min(64vw,880px);height:auto;overflow:visible;
+  transform:translateX(17%);
+}
+/* keeps copy readable where it overlaps the drawing */
+.machine::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,var(--void) 26%,rgba(23,24,26,.72) 46%,transparent 68%);
+}
+
+/* every section is now glass — the machine reads straight through */
+main{position:relative;z-index:1}
+.sec,.stage,.rig,.cta,.stats,.belt,
+.sec--dark,.sec--paper,.stage--mech,#passes,#process{background:transparent!important}
+.rig,#passes,.sec--paper{color:var(--fg-dim)}
+.rig .h2,#passes .h2,.sec--paper .h2,.rig h3,#passes h3{color:var(--fg)}
+.rig__note,#passes .stage__note{color:var(--fg-dim)}
+#passes .secno,.rig .secno{color:var(--arc)}
+.nav.on-light{color:var(--fg)}
+.nav.on-light .logo__wm,.nav.on-light .nav__links a{color:var(--fg)}
+.nav.on-light.is-stuck{background:rgba(23,24,26,.82);border-bottom-color:var(--hair)}
+
+/* copy sits in a column on the left so it never fights the drawing */
+.wrap>*,.stage__copy,.rig__copy{max-width:min(100%,540px)}
+.sec__hd{grid-template-columns:1fr}
+.cards,.gal,.sites,.miss,.idx{max-width:min(100%,620px)}
+.cta__in{grid-template-columns:1fr}
+.form{max-width:520px}
+
+/* machine linework */
+.ph{opacity:0}
+.m-cl{fill:none;stroke:var(--fg);stroke-width:1;opacity:.22;stroke-dasharray:16 5 3 5}
+.m-dim{fill:none;stroke:var(--p-blue);stroke-width:.9;opacity:.5}
+.m-dimt{font-family:var(--m);font-size:11px;letter-spacing:.14em;fill:var(--p-blue);opacity:.75}
+.m-p{fill:rgba(236,234,230,.03);stroke:var(--fg);stroke-width:1.6;opacity:.85;stroke-linejoin:round}
+.m-f{fill:rgba(236,234,230,.02);stroke:none}
+.m-l{fill:none;stroke:var(--fg);stroke-width:1;opacity:.3}
+.m-seam{fill:none;stroke:var(--p-amber);stroke-width:3;stroke-linecap:round;opacity:.95}
+.m-pipe{fill:none;stroke:var(--p-cyan);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.m-fl{fill:none;stroke:var(--fg);stroke-width:2;opacity:.6;stroke-linecap:round}
+.m-shaft{fill:none;stroke:var(--p-lime);stroke-width:3;opacity:.6}
+.m-gauge{fill:none;stroke:var(--fg);stroke-width:1.4;opacity:.7}
+.m-needle{stroke:var(--p-red);stroke-width:2;stroke-linecap:round;
+  transform-box:fill-box;transform-origin:50% 100%}
+.m-tag{font-family:var(--m);font-size:10.5px;letter-spacing:.16em;fill:var(--fg);opacity:.55}
+.m-gear-body{fill:none;stroke:var(--p-lime);stroke-width:1.5;opacity:.85;stroke-linejoin:round;
+  transform-box:fill-box;transform-origin:50% 50%}
+.m-gear-hub{fill:none;stroke:var(--p-lime);stroke-width:1.1;opacity:.4}
+
+/* progress readout */
+.machine__hud{
+  position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+  display:flex;align-items:center;gap:14px;color:var(--fg-dim);white-space:nowrap;
+}
+.mhud__bar{width:180px;height:2px;background:var(--hair);position:relative;overflow:hidden}
+.mhud__bar::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--mp,0%);
+  background:linear-gradient(90deg,var(--p-cyan),var(--p-amber),var(--arc))}
+.mhud__pct{font-variant-numeric:tabular-nums;min-width:4ch;text-align:right}
+
+@media (max-width:900px){
+  #machineSvg{width:112vw;transform:translateX(4%);opacity:.5}
+  .machine::after{background:linear-gradient(180deg,rgba(23,24,26,.86),rgba(23,24,26,.72))}
+  .machine__hud{bottom:12px}
+}
+@media (prefers-reduced-motion:reduce){ .ph{opacity:1!important} }
