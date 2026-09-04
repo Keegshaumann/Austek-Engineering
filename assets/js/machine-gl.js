@@ -445,10 +445,12 @@
 
   /* Theme inversion. Materials lift and the rim drops away, because the same
      charcoal that reads as metal on black turns to mud on paper.            */
+  /* On paper the object stays dark and silhouettes against the ground.
+     Lifting it to mid grey kills the contrast and it reads as plastic. */
   var BASE = [], LIGHT = [];
   Object.keys(MAT).forEach(function (k) {
     BASE.push(MAT[k].color.clone());
-    LIGHT.push(MAT[k].color.clone().lerp(new T.Color(0x9aa3ad), 0.62));
+    LIGHT.push(MAT[k].color.clone().lerp(new T.Color(0x101316), 0.34));
   });
   var matList = Object.keys(MAT).map(function (k) { return MAT[k]; });
   var themeT = 0;
@@ -456,15 +458,18 @@
   function setTheme(t) {
     if (Math.abs(t - themeT) < 0.004) return;
     themeT = t;
+    renderer.toneMappingExposure = 1.05 - t * 0.18;
     for (var i = 0; i < matList.length; i++) {
       matList[i].color.copy(BASE[i]).lerp(LIGHT[i], t);
     }
-    hemi.intensity   = 0.62 + t * 0.85;
-    key.intensity    = 1.65 + t * 1.15;
-    rimA.intensity   = 1.45 * (1 - t * 0.82);
-    rimB.intensity   = 0.85 * (1 - t * 0.82);
-    fill.intensity   = 0.55 + t * 0.35;
-    floorMat.opacity = 0.30 - t * 0.14;
+    /* paper bounces a lot of light back up, and the key has to model the
+       top faces since the rim can no longer carry the form */
+    hemi.intensity   = 0.62 + t * 0.70;
+    key.intensity    = 1.65 + t * 1.45;
+    rimA.intensity   = 1.45 * (1 - t * 0.45);   /* keep an edge, just quieter */
+    rimB.intensity   = 0.85 * (1 - t * 0.45);
+    fill.intensity   = 0.55 + t * 0.55;
+    floorMat.opacity = 0.30 + t * 0.26;         /* a real shadow on paper */
     document.body.classList.toggle('theme-light', t > 0.5);
   }
 
