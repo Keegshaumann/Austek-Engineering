@@ -618,6 +618,177 @@
     });
   }
 
+
+  /* ═══════════════════════════ MECHANISM · gear train ═════════════════════ */
+  var gearSvg = document.getElementById('gearSvg');
+  if (gearSvg) {
+    var mk = function (tag, attrs) {
+      var n = document.createElementNS(SVGNS, tag);
+      for (var k in attrs) n.setAttribute(k, attrs[k]);
+      return n;
+    };
+
+    /* trapezoidal tooth profile swept around the pitch circle */
+    function gearPath(teeth, rOut, rRoot) {
+      var ap = Math.PI * 2 / teeth, d = '';
+      for (var i = 0; i < teeth; i++) {
+        var a = i * ap;
+        var pts = [[rRoot, a], [rOut, a + ap * 0.22], [rOut, a + ap * 0.52], [rRoot, a + ap * 0.74]];
+        for (var j = 0; j < 4; j++) {
+          var x = (Math.cos(pts[j][1]) * pts[j][0]).toFixed(2);
+          var y = (Math.sin(pts[j][1]) * pts[j][0]).toFixed(2);
+          d += (i === 0 && j === 0 ? 'M' : 'L') + x + ' ' + y + ' ';
+        }
+      }
+      return d + 'Z';
+    }
+
+    var gears = [];
+    ['gearA', 'gearB', 'gearC'].forEach(function (id) {
+      var outer = document.getElementById(id);
+      var teeth = +outer.dataset.teeth, r = +outer.dataset.r;
+      outer.setAttribute('transform', 'translate(' + outer.dataset.cx + ',' + outer.dataset.cy + ')');
+
+      var rRoot = r * 0.87, rHub = r * 0.44, rBore = r * 0.17;
+      var spin = mk('g', { class: 'gear-spin' });
+
+      spin.appendChild(mk('path', { class: 'gear-body', d: gearPath(teeth, r, rRoot) }));
+      spin.appendChild(mk('circle', { class: 'gear-hub', r: rHub, cx: 0, cy: 0 }));
+      for (var sp = 0; sp < 6; sp++) {
+        var a = sp * Math.PI / 3;
+        spin.appendChild(mk('line', {
+          class: 'gear-spoke',
+          x1: (Math.cos(a) * rBore).toFixed(1), y1: (Math.sin(a) * rBore).toFixed(1),
+          x2: (Math.cos(a) * rHub).toFixed(1),  y2: (Math.sin(a) * rHub).toFixed(1)
+        }));
+      }
+      /* keyway so the rotation is actually readable */
+      spin.appendChild(mk('rect', { class: 'gear-key', x: -2.5, y: -rHub - 4, width: 5, height: 11, rx: 1 }));
+      spin.appendChild(mk('circle', { class: 'gear-bore', r: rBore, cx: 0, cy: 0 }));
+
+      outer.appendChild(mk('circle', { class: 'gear-pitch', r: r * 0.93, cx: 0, cy: 0 }));
+      outer.appendChild(spin);
+      gears.push({ spin: spin, teeth: teeth });
+    });
+
+    /* ratios are inverse to tooth count, and every mesh reverses direction */
+    var TA = gears[0].teeth, TB = gears[1].teeth, TC = gears[2].teeth;
+    var hudRev = document.getElementById('hudRev');
+    var hudRatio = document.getElementById('hudRatio');
+    hudRatio.textContent = '1 : ' + (TA / TC).toFixed(2);
+
+    var scrollDeg = 0, jogDeg = 0, idleDeg = 0;
+    function applyGears() {
+      var a = scrollDeg + jogDeg + idleDeg;
+      utils.set(gears[0].spin, { rotate: a });
+      utils.set(gears[1].spin, { rotate: -a * TA / TB });
+      utils.set(gears[2].spin, { rotate:  a * TA / TC });
+      hudRev.textContent = (a / 360).toFixed(2);
+    }
+
+    if (!reduced) {
+      /* 1 · scroll drives the train */
+      var driver = { a: 0 };
+      animate(driver, {
+        a: [0, 540],
+        ease: 'linear',
+        duration: 1000,
+        onUpdate: function () { scrollDeg = driver.a; applyGears(); },
+        autoplay: onScroll({
+          target: '#mechanism',
+          enter: 'bottom top',
+          leave: 'top bottom',
+          sync: true
+        })
+      });
+
+      /* 2 · Timer keeps a slow idle turn so it is never dead on screen */
+      A.createTimer({
+        duration: 24000,
+        loop: true,
+        onUpdate: function (self) {
+          idleDeg = (self.currentTime / 24000) * 360;
+          applyGears();
+        }
+      });
+
+      /* 3 · Draggable jog wheel as a manual drive input */
+      var jogEl = document.getElementById('jogHandle');
+      if (jogEl && A.createDraggable) {
+        A.createDraggable(jogEl, {
+          y: false,
+          container: document.getElementById('jog'),
+          releaseStiffness: 40,
+          releaseDamping: 12,
+          onUpdate: function (self) {
+            jogDeg = self.x * 1.6;
+            applyGears();
+          }
+        });
+      }
+      applyGears();
+    }
+  }
+
+  /* ═══════════════════════════ WELD PASSES · cross-section ════════════════ */
+  var weldSvg = document.getElementById('weldSvg');
+  if (weldSvg) {
+    var beadsG = document.getElementById('weldBeads');
+    var labelsG = document.getElementById('weldLabels');
+    var svgNS = SVGNS;
+
+    var PASSES_SEQ = [
+      { n: 'Root',   cy: 243, rx: 44, ry: 12, c: 'var(--p-cyan)' },
+      { n: 'Hot',    cy: 221, rx: 54, ry: 13, c: 'var(--p-teal)' },
+      { n: 'Fill 1', cy: 197, rx: 64, ry: 14, c: 'var(--p-lime)' },
+      { n: 'Fill 2', cy: 171, rx: 76, ry: 15, c: 'var(--p-amber)' },
+      { n: 'Cap',    cy: 140, rx: 94, ry: 18, c: 'var(--p-orange)' }
+    ];
+
+    var beads = [], labels = [];
+    PASSES_SEQ.forEach(function (pass, i) {
+      var e = document.createElementNS(svgNS, 'ellipse');
+      e.setAttribute('class', 'w-bead');
+      e.setAttribute('cx', 450); e.setAttribute('cy', pass.cy);
+      e.setAttribute('rx', pass.rx); e.setAttribute('ry', pass.ry);
+      e.setAttribute('fill', pass.c);
+      beadsG.appendChild(e);
+      beads.push(e);
+
+      var ly = pass.cy;
+      var lead = document.createElementNS(svgNS, 'path');
+      lead.setAttribute('class', 'w-lead');
+      lead.setAttribute('d', 'M' + (450 + pass.rx + 8) + ' ' + ly + ' H' + (700 + i * 6));
+      labelsG.appendChild(lead);
+
+      var t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('class', 'w-lbl');
+      t.setAttribute('x', 708 + i * 6); t.setAttribute('y', ly + 4);
+      t.textContent = String(i + 1).padStart(2, '0') + ' · ' + pass.n;
+      labelsG.appendChild(t);
+      labels.push(t);
+      labels.push(lead);
+    });
+
+    if (reduced) {
+      utils.set(beads, { opacity: 1, scaleY: 1 });
+      utils.set(labels, { opacity: 1 });
+    } else {
+      var weldTl = createTimeline({ defaults: { ease: EASE }, autoplay: false });
+      beads.forEach(function (b, i) {
+        weldTl.add(b, {
+          opacity: [0, 1],
+          scaleY: [0, 1],
+          duration: 520
+        }, i * 420);
+        weldTl.add([labels[i * 2], labels[i * 2 + 1]], {
+          opacity: [0, 1], duration: 340
+        }, i * 420 + 220);
+      });
+      revealOnScroll(weldTl, weldSvg);
+    }
+  }
+
   /* ─────────────────────────────────────────────────────── micro-reactions ─ */
   if (!reduced) {
     document.querySelectorAll('.gal__i').forEach(function (el) {

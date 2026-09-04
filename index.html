@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=7">
+<link rel="stylesheet" href="assets/css/styles.css?v=12">
 </head>
 <body>
 
@@ -261,6 +261,56 @@
     </div>
   </div>
   <div class="rig__spacer"></div>
+</section>
+
+
+<!-- ═══════════════════════════════ MECHANISM · gear train ══════════════════ -->
+<section class="stage stage--mech" id="mechanism">
+  <div class="wrap stage__copy">
+    <p class="mono secno">02 — Mechanism</p>
+    <h2 class="h2">Drive, ratio,<br>output.</h2>
+    <p class="stage__note">Every drive train we fabricate or repair comes down to the same thing: teeth that mesh, loads that transfer, tolerances that hold. Drag the jog wheel to turn it over.</p>
+  </div>
+
+  <div class="wrap stage__vis">
+    <svg id="gearSvg" viewBox="0 0 900 560" aria-hidden="true">
+      <g id="gearA" class="gear" data-teeth="24" data-r="104" data-cx="220" data-cy="300" style="--g:var(--p-cyan)"></g>
+      <g id="gearB" class="gear" data-teeth="16" data-r="70"  data-cx="394" data-cy="300" style="--g:var(--p-amber)"></g>
+      <g id="gearC" class="gear" data-teeth="32" data-r="138" data-cx="602" data-cy="300" style="--g:var(--p-lime)"></g>
+      <g id="gearMarks"></g>
+    </svg>
+  </div>
+
+  <div class="wrap mech__hud mono">
+    <div class="hud"><i style="--g:var(--p-cyan)"></i>Drive<b id="hudA">24T</b></div>
+    <div class="hud"><i style="--g:var(--p-amber)"></i>Idler<b id="hudB">16T</b></div>
+    <div class="hud"><i style="--g:var(--p-lime)"></i>Output<b id="hudC">32T</b></div>
+    <div class="hud hud--wide">Ratio<b id="hudRatio">1 : 0.75</b></div>
+    <div class="hud hud--wide">Revolutions<b id="hudRev">0.00</b></div>
+    <div class="jog" id="jog" title="Drag to drive"><span class="jog__t"></span><span class="jog__h" id="jogHandle"></span></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ WELD PASSES · cross-section ═════════════════ -->
+<section class="stage is-light" id="passes">
+  <div class="wrap stage__copy">
+    <p class="mono secno">03 — The weld</p>
+    <h2 class="h2">Five passes,<br>one joint.</h2>
+    <p class="stage__note">A coded weld isn&rsquo;t one run of the torch. The groove is filled in sequence — each pass cleaned and checked before the next goes down.</p>
+  </div>
+
+  <div class="wrap stage__vis">
+    <svg id="weldSvg" viewBox="0 0 900 420" aria-hidden="true">
+      <!-- parent plates, bevelled to a V -->
+      <path class="w-plate" d="M40 250 H360 L440 130 V90 H40 Z"/>
+      <path class="w-plate" d="M860 250 H540 L460 130 V90 H860 Z"/>
+      <path class="w-root" d="M360 250 H540"/>
+      <g id="weldBeads"></g>
+      <g id="weldLabels"></g>
+    </svg>
+  </div>
+
+  <div class="wrap mono stage__cap">Butt joint · single-V groove</div>
 </section>
 
 <!-- ══════════════════════════════════════ CAPABILITY ═══════════════════════ -->
@@ -525,7 +575,7 @@
   </div>
 </footer>
 
-<script src="assets/js/anime.umd.min.js?v=7"></script>
-<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/anime.umd.min.js?v=12"></script>
+<script src="assets/js/main.js?v=12"></script>
 </body>
 </html>

@@ -441,3 +441,60 @@ select option{background:var(--void);color:var(--fg)}
   .scrub__lbl{display:none}
   .asm{max-height:38vh}
 }
+
+/* ══════════════════════════════════════ pastel accent set ════════════════ */
+:root{
+  --p-red:#ff7b7b;   --p-orange:#ffa76b; --p-amber:#ffcf7a;
+  --p-lime:#b6f08a;  --p-green:#7fe6a8;  --p-teal:#6fe3cf;
+  --p-cyan:#7cd8f5;  --p-blue:#8fb4ff;   --p-indigo:#a9a6ff;
+  --p-purple:#cba6ff;--p-pink:#ff9ed6;
+}
+
+/* ─────────────────────────────────────── mechanism · gear train ────────── */
+.stage--mech{background:var(--void)}
+#gearSvg{width:100%;height:auto;overflow:visible}
+
+.gear-body{fill:none;stroke:var(--g,var(--fg));stroke-width:1.6;opacity:.9;
+  stroke-linejoin:round;transform-box:fill-box;transform-origin:50% 50%}
+.gear-hub{fill:none;stroke:var(--g,var(--fg));stroke-width:1.2;opacity:.45}
+.gear-bore{fill:var(--void);stroke:var(--g,var(--fg));stroke-width:1.4;opacity:.75}
+.gear-spoke{stroke:var(--g,var(--fg));stroke-width:1.1;opacity:.3}
+.gear-key{fill:var(--g,var(--fg));opacity:.9}
+.gear-pitch{fill:none;stroke:var(--g,var(--fg));stroke-width:1;opacity:.22;stroke-dasharray:4 7}
+.mesh-mark{fill:none;stroke:var(--fg);stroke-width:1;opacity:.18;stroke-dasharray:3 6}
+
+.mech__hud{display:flex;flex-wrap:wrap;align-items:center;gap:10px 26px;
+  border-top:1px solid var(--hair);padding-top:20px;margin-top:8px}
+.hud{display:inline-flex;align-items:center;gap:9px;color:var(--fg-dim);font-size:.66rem;letter-spacing:.15em}
+.hud i{width:7px;height:7px;border-radius:50%;background:var(--g);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--g) 22%,transparent)}
+.hud b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums}
+.hud--wide b{min-width:8ch;display:inline-block}
+
+/* jog wheel — draggable drive input */
+.jog{position:relative;flex:1 1 220px;min-width:180px;height:34px;display:flex;align-items:center}
+.jog__t{position:absolute;inset:auto 0 auto 0;height:2px;background:var(--hair);border-radius:2px}
+.jog__h{position:relative;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--hair);background:var(--void-2);cursor:grab;
+  display:grid;place-items:center;touch-action:none}
+.jog__h::before{content:"";width:2px;height:12px;background:var(--p-cyan);border-radius:2px}
+.jog__h::after{content:"";position:absolute;inset:6px;border:1px dashed var(--hair);border-radius:50%}
+.jog__h:active{cursor:grabbing;border-color:var(--p-cyan)}
+
+/* ──────────────────────────────────── weld passes · cross-section ──────── */
+#passes{background:var(--paper);color:#4a4a46}
+#passes .h2{color:var(--ink)}
+#passes .secno{color:var(--arc)}
+#weldSvg{width:100%;height:auto;overflow:visible}
+.w-plate{fill:rgba(26,27,29,.07);stroke:var(--ink);stroke-width:1.6;opacity:.75}
+.w-root{stroke:var(--ink);stroke-width:1;opacity:.25;stroke-dasharray:5 6}
+.w-bead{stroke-width:0;opacity:0;transform-box:fill-box;transform-origin:50% 100%}
+.w-lbl{font-family:var(--m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  fill:var(--ink);opacity:0}
+.w-lead{stroke:var(--ink);stroke-width:.8;opacity:.35;fill:none}
+
+@media (max-width:820px){
+  .mech__hud{gap:8px 16px}
+  .hud{font-size:.6rem}
+  .jog{flex-basis:100%}
+}
