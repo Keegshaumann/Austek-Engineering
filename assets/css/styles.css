@@ -533,8 +533,8 @@ main{position:relative;z-index:1}
 .form{max-width:520px}
 
 /* ── the 3D machine ───────────────────────────────────────────────────── */
-#m3{width:min(78vw,1180px);height:auto;overflow:visible;filter:saturate(.92)}
-#m3 path{shape-rendering:geometricPrecision}
+#m3c{width:100%;height:100%;display:block}
+#m3Leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .m3-lead{stroke:var(--fg);stroke-width:1;opacity:0;fill:none;
   transition:opacity .35s ease}
 
@@ -570,7 +570,7 @@ main{position:relative;z-index:1}
 .mhud__pct{font-variant-numeric:tabular-nums;min-width:4ch;text-align:right}
 
 @media (max-width:900px){
-  #m3{width:132vw}
+  #m3c{width:100%}
   .mcard{width:min(74vw,300px);font-size:.9em}
   .mcard--l,.mcard--r{left:50%;right:auto;transform:translateX(-50%) translateY(14px)}
   .mcard.is-on{transform:translateX(-50%) translateY(0)}
