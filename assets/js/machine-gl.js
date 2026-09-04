@@ -22,9 +22,9 @@
   if ('outputColorSpace' in renderer) renderer.outputColorSpace = T.SRGBColorSpace;
 
   var scene = new T.Scene();
-  var camera = new T.PerspectiveCamera(34, 1, 1, 5000);
-  camera.position.set(0, 210, 900);
-  camera.lookAt(0, -10, 0);
+  var camera = new T.PerspectiveCamera(26, 1, 1, 6000);
+  camera.position.set(230, 620, 2150);   /* raised 3/4, long lens, framed to fit exploded */
+  camera.lookAt(-10, -30, 0);
 
   /* ── an environment so metal has something to reflect ──────────────────── */
   (function () {
@@ -139,10 +139,10 @@
     part(new T.CylinderGeometry(12, 12, 40, 12), MAT.steel, [b[0], -148, b[1]], 'frame', [0, -1, 0], 1.9);
   });
 
-  part(new T.BoxGeometry(340, 215, 255), MAT.casing, [-40, -28, 0], 'casing', [0, .4, -1], 1.35);
+  part(new T.BoxGeometry(340, 215, 255), MAT.casing, [-40, 8, 0], 'casing', [0, .4, -1], 1.35);
 
-  var gearBig = part(gearGeo(20, 110, 88, 38), MAT.bronze,  [-98, -26, 0], 'gears', [-.8, .6, .2], 1.55);
-  var pinion  = part(gearGeo(12, 68, 52, 38),  MAT.bronze2, [80, -26, 0],  'gears', [.5, 1, .25], 1.55);
+  var gearBig = part(gearGeo(20, 110, 88, 38), MAT.bronze,  [-98, 14, 20], 'gears', [-.8, .6, .2], 1.55);
+  var pinion  = part(gearGeo(12, 68, 52, 38),  MAT.bronze2, [80, 14, 20],  'gears', [.5, 1, .25], 1.55);
 
   var shaft = new T.CylinderGeometry(16, 16, 480, 20);
   shaft.rotateZ(Math.PI / 2);
@@ -155,22 +155,22 @@
 
   var motor = new T.CylinderGeometry(80, 80, 215, 28);
   motor.rotateZ(Math.PI / 2);
-  part(motor, MAT.motor, [-305, -26, 0], 'motor', [-1, .25, -.35], 1.45);
+  part(motor, MAT.motor, [-305, -66, -40], 'motor', [-1, .25, -.35], 1.45);
   for (var f = 0; f < 10; f++) {
-    part(new T.BoxGeometry(5, 176, 176), MAT.motor, [-398 + f * 20, -26, 0], 'motor', [-1, .25, -.35], 1.45);
+    part(new T.BoxGeometry(5, 176, 176), MAT.motor, [-398 + f * 20, -66, -40], 'motor', [-1, .25, -.35], 1.45);
   }
   var coup = new T.CylinderGeometry(48, 48, 62, 20);
   coup.rotateZ(Math.PI / 2);
-  part(coup, MAT.copper, [-180, -26, 0], 'motor', [-.4, -.85, .6], 1.35);
+  part(coup, MAT.copper, [-180, -66, -40], 'motor', [-.4, -.85, .6], 1.35);
 
-  part(new T.BoxGeometry(155, 155, 175), MAT.green, [272, -58, 0], 'pump', [1, .3, .6], 1.35);
+  part(new T.BoxGeometry(155, 155, 175), MAT.green, [272, -78, 30], 'pump', [1, .3, .6], 1.35);
   var suc = new T.CylinderGeometry(42, 42, 130, 20);
   suc.rotateZ(Math.PI / 2);
-  part(suc, MAT.green, [368, -58, 0], 'pump', [1, .4, .7], 1.4);
+  part(suc, MAT.green, [368, -78, 30], 'pump', [1, .4, .7], 1.4);
   var fl = new T.CylinderGeometry(60, 60, 18, 24);
   fl.rotateZ(Math.PI / 2);
-  part(fl, MAT.steel, [428, -58, 0], 'pump', [1, .45, .75], 1.45);
-  part(new T.CylinderGeometry(30, 30, 200, 20), MAT.green, [272, 62, 0], 'pump', [.3, 1, .55], 1.3);
+  part(fl, MAT.steel, [428, -78, 30], 'pump', [1, .45, .75], 1.45);
+  part(new T.CylinderGeometry(30, 30, 200, 20), MAT.green, [272, 42, 30], 'pump', [.3, 1, .55], 1.3);
 
   part(new T.BoxGeometry(310, 24, 24), MAT.loom, [-120, 88, -125], 'wiring', [-.3, .9, -1], 1.5);
   part(new T.BoxGeometry(24, 135, 24), MAT.loom, [-270, 22, -125], 'wiring', [-.5, .85, -1], 1.5);
@@ -203,12 +203,12 @@
     var host = cfg[0], x = cfg[1], rOut = cfg[2], holes = cfg[3], rr = cfg[4];
     var hub = new T.CylinderGeometry(rr * 0.62, rr * 0.62, 46, 20);
     hub.rotateX(Math.PI / 2);
-    part(hub, MAT.bronze, [x, -26, 0], 'gears', host.userData.dir.toArray(), host.userData.spread);
+    part(hub, MAT.bronze, [x, 14, 20], 'gears', host.userData.dir.toArray(), host.userData.spread);
     for (var i = 0; i < holes; i++) {
       var a = i / holes * Math.PI * 2;
       var h = new T.CylinderGeometry(rOut * 0.17, rOut * 0.17, 42, 14);
       h.rotateX(Math.PI / 2);
-      part(h, MAT.dark, [x + Math.cos(a) * rOut * 0.55, -26 + Math.sin(a) * rOut * 0.55, 0],
+      part(h, MAT.dark, [x + Math.cos(a) * rOut * 0.55, 14 + Math.sin(a) * rOut * 0.55, 20],
            'gears', host.userData.dir.toArray(), host.userData.spread);
     }
   });
@@ -216,12 +216,12 @@
   /* casing: ribs, inspection cover, mounting feet */
   for (var rb = 0; rb < 5; rb++) {
     part(new T.BoxGeometry(12, 225, 268), MAT.casing,
-         [-175 + rb * 68, -28, 0], 'casing', [0, .4, -1], 1.35);
+         [-175 + rb * 68, 8, 0], 'casing', [0, .4, -1], 1.35);
   }
-  part(new T.BoxGeometry(150, 96, 12), MAT.frame, [-40, 20, 130], 'casing', [0, .4, -1], 1.35);
-  boltRing(8, 54, [-40, 20, 137], 'z', 'casing', [0, .4, -1], 1.35, 5);
+  part(new T.BoxGeometry(150, 96, 12), MAT.frame, [-40, 56, 130], 'casing', [0, .4, -1], 1.35);
+  boltRing(8, 54, [-40, 56, 137], 'z', 'casing', [0, .4, -1], 1.35, 5);
   [[-160, 130], [-160, -130], [80, 130], [80, -130]].forEach(function (ft) {
-    part(new T.BoxGeometry(70, 26, 46), MAT.frame, [ft[0], -128, ft[1]], 'casing', [0, .4, -1], 1.35);
+    part(new T.BoxGeometry(70, 26, 46), MAT.frame, [ft[0], -92, ft[1]], 'casing', [0, .4, -1], 1.35);
   });
 
   /* bearing caps and races */
@@ -236,26 +236,26 @@
   });
 
   /* motor: terminal box, fan cowl, feet, nameplate */
-  part(new T.BoxGeometry(86, 54, 74), MAT.painted, [-305, 66, 0], 'motor', [-1, .25, -.35], 1.45);
+  part(new T.BoxGeometry(86, 54, 74), MAT.painted, [-305, 26, -40], 'motor', [-1, .25, -.35], 1.45);
   var cowl = new T.CylinderGeometry(66, 84, 46, 28);
   cowl.rotateZ(Math.PI / 2);
-  part(cowl, MAT.dark, [-425, -26, 0], 'motor', [-1, .25, -.35], 1.45);
+  part(cowl, MAT.dark, [-425, -66, -40], 'motor', [-1, .25, -.35], 1.45);
   for (var v = 0; v < 10; v++) {
     var av = v / 10 * Math.PI * 2;
     part(new T.BoxGeometry(8, 34, 9), MAT.dark,
-         [-448, -26 + Math.sin(av) * 48, Math.cos(av) * 48], 'motor', [-1, .25, -.35], 1.45);
+         [-448, -66 + Math.sin(av) * 48, -40 + Math.cos(av) * 48], 'motor', [-1, .25, -.35], 1.45);
   }
   [[-250, 86], [-250, -86], [-360, 86], [-360, -86]].forEach(function (ft) {
-    part(new T.BoxGeometry(52, 22, 34), MAT.motor, [ft[0], -118, ft[1]], 'motor', [-1, .25, -.35], 1.45);
+    part(new T.BoxGeometry(52, 22, 34), MAT.motor, [ft[0], -158, ft[1]], 'motor', [-1, .25, -.35], 1.45);
   });
-  part(new T.BoxGeometry(46, 2, 30), MAT.steel, [-290, 40, 62], 'motor', [-1, .25, -.35], 1.45);
+  part(new T.BoxGeometry(46, 2, 30), MAT.steel, [-290, 0, 22], 'motor', [-1, .25, -.35], 1.45);
 
   /* pump: volute, flanges bolted up, drain */
   var volute = new T.TorusGeometry(74, 30, 12, 26);
-  part(volute, MAT.green, [272, -58, 0], 'pump', [1, .3, .6], 1.35);
-  boltRing(8, 46, [434, -58, 0], 'x', 'pump', [1, .45, .75], 1.45, 6);
-  boltRing(8, 40, [272, 158, 0], 'y', 'pump', [.3, 1, .55], 1.3, 6);
-  part(new T.CylinderGeometry(14, 14, 30, 12), MAT.steel, [272, -142, 0], 'pump', [1, .3, .6], 1.35);
+  part(volute, MAT.green, [272, -78, 30], 'pump', [1, .3, .6], 1.35);
+  boltRing(8, 46, [434, -78, 30], 'x', 'pump', [1, .45, .75], 1.45, 6);
+  boltRing(8, 40, [272, 138, 30], 'y', 'pump', [.3, 1, .55], 1.3, 6);
+  part(new T.CylinderGeometry(14, 14, 30, 12), MAT.steel, [272, -162, 30], 'pump', [1, .3, .6], 1.35);
 
   /* frame: gussets and holding-down bolt heads */
   [[-300, 148], [-300, -148], [300, 148], [300, -148]].forEach(function (gp) {
@@ -320,11 +320,11 @@
   }
 
   function setProgress(p) {
-    scene.rotation.y = -0.5 + p * Math.PI * 1.6;
-    scene.rotation.x = -0.06 + Math.sin(p * Math.PI) * 0.16;
+    scene.rotation.y = -0.62 + p * Math.PI * 1.15;
+    scene.rotation.x = -0.04 + Math.sin(p * Math.PI) * 0.12;
     explode = p < 0.12 ? 0
-            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 210
-            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 210;
+            : p > 0.9 ? (1 - (p - 0.9) / 0.1) * 44
+            : Math.sin(((p - 0.12) / 0.78) * Math.PI * 0.5) * 44;
     spinT = p * Math.PI * 7;
 
     Object.keys(GROUPS).forEach(function (k) {
@@ -377,5 +377,5 @@
   }
 
   window.addEventListener('resize', function () { layout(); frame(); }, { passive: true });
-  window.__gl = { scene: scene, renderer: renderer, setProgress: setProgress, groups: GROUPS, frame: frame };
+  window.__gl = { scene: scene, camera: camera, renderer: renderer, setProgress: setProgress, groups: GROUPS, frame: frame };
 })();

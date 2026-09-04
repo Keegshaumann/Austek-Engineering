@@ -126,7 +126,7 @@ p{margin:0 0 1.05em}
 .hero__copy{position:relative;z-index:2;max-width:560px}
 
 .tag{display:inline-flex;align-items:center;gap:9px;color:var(--fg-dim);margin-bottom:30px}
-.hero__h1{font-size:clamp(3.2rem,7.4vw,6rem);letter-spacing:-.05em;margin-bottom:28px}
+.hero__h1{font-size:clamp(3.6rem,10.5vw,9.5rem);letter-spacing:-.055em;line-height:.92;margin-bottom:34px}
 .hero__h1 .ln{display:block;overflow:hidden;padding-bottom:.05em;position:relative}
 .seam{
   position:absolute;left:0;right:6%;bottom:.12em;height:2px;border-radius:2px;
@@ -135,7 +135,7 @@ p{margin:0 0 1.05em}
 }
 .hero__h1 .w{display:inline-block}
 .pd{color:var(--arc);font-weight:700;display:inline-block}
-.hero__sub{max-width:46ch;color:var(--fg-dim);font-size:1.02rem;margin-bottom:32px}
+.hero__sub{max-width:34ch;color:var(--fg-dim);font-size:1.06rem;margin-bottom:38px}
 .hero__cta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:44px}
 
 .hero__specs{list-style:none;margin:0;padding:0;display:grid;gap:0;max-width:400px}
@@ -510,7 +510,7 @@ body{background:var(--void)}
 /* keeps copy readable where it overlaps the drawing */
 .machine::after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(100deg,var(--void) 26%,rgba(23,24,26,.72) 46%,transparent 68%);
+  background:linear-gradient(100deg,var(--void) 20%,rgba(23,24,26,.62) 38%,transparent 58%);
 }
 
 /* every section is now glass — the machine reads straight through */
@@ -526,7 +526,7 @@ main{position:relative;z-index:1}
 .nav.on-light.is-stuck{background:rgba(23,24,26,.82);border-bottom-color:var(--hair)}
 
 /* copy sits in a column on the left so it never fights the drawing */
-.wrap>*,.stage__copy,.rig__copy{max-width:min(100%,540px)}
+.wrap>*,.stage__copy,.rig__copy{max-width:min(100%,460px)}
 .sec__hd{grid-template-columns:1fr}
 .cards,.gal,.sites,.miss,.idx{max-width:min(100%,620px)}
 .cta__in{grid-template-columns:1fr}
@@ -541,23 +541,20 @@ main{position:relative;z-index:1}
 /* content that hangs off the parts */
 .mcards{position:absolute;inset:0;pointer-events:none}
 .mcard{
-  position:absolute;width:min(31vw,330px);
-  background:rgba(23,24,26,.82);backdrop-filter:blur(9px);
+  position:absolute;right:clamp(20px,6vw,110px);top:50%;
+  width:min(34vw,370px);
+  transform:translateY(calc(-50% + 20px));
+  padding:26px 28px;
+  background:linear-gradient(180deg,rgba(23,24,26,.9),rgba(23,24,26,.72));
+  backdrop-filter:blur(12px);
   border:1px solid var(--hair);border-left:2px solid var(--arc);
-  padding:18px 20px;pointer-events:auto;
-  opacity:0;transform:translateY(14px);
-  transition:opacity .45s ease,transform .45s cubic-bezier(.22,.68,.28,1);
+  pointer-events:auto;opacity:0;visibility:hidden;
+  transition:opacity .5s ease,transform .55s cubic-bezier(.22,.68,.28,1),visibility .5s;
 }
-.mcard.is-on{opacity:1;transform:translateY(0)}
-.mcard--l{left:clamp(16px,5vw,90px)}
-.mcard--r{right:clamp(16px,5vw,90px)}
-.mcard:nth-of-type(1){top:16%}   .mcard:nth-of-type(2){top:23%}
-.mcard:nth-of-type(3){top:34%}   .mcard:nth-of-type(4){top:41%}
-.mcard:nth-of-type(5){top:56%}   .mcard:nth-of-type(6){top:60%}
-.mcard:nth-of-type(7){top:70%}
-.mcard__n{display:block;color:var(--arc);margin-bottom:8px;font-size:.62rem}
-.mcard h3{font-size:1.12rem;margin-bottom:7px;letter-spacing:-.02em}
-.mcard p{margin:0;font-size:.86rem;line-height:1.55;color:var(--fg-dim)}
+.mcard.is-on{opacity:1;visibility:visible;transform:translateY(-50%)}
+.mcard__n{display:block;color:var(--arc);margin-bottom:12px;font-size:.64rem}
+.mcard h3{font-size:1.5rem;margin-bottom:11px;letter-spacing:-.03em;line-height:1.05}
+.mcard p{margin:0;font-size:.92rem;line-height:1.6;color:var(--fg-dim)}
 
 /* progress readout */
 .machine__hud{
@@ -578,3 +575,11 @@ main{position:relative;z-index:1}
   .machine__hud{bottom:12px}
 }
 @media (prefers-reduced-motion:reduce){ .ph{opacity:1!important} }
+
+
+/* single-slot card on small screens too */
+@media (max-width:900px){
+  .mcard{right:auto;left:50%;width:min(84vw,380px);top:auto;bottom:96px;
+    transform:translateX(-50%) translateY(18px)}
+  .mcard.is-on{transform:translateX(-50%) translateY(0)}
+}
