@@ -576,6 +576,18 @@
       onLeave: function () {
         machineEl.classList.add('is-done');
         document.querySelectorAll('.mlayer').forEach(function (l) { l.classList.add('is-done'); });
+        /* progress is smoothed, so leaving mid-ramp used to strand the page on
+           the light ground while everything below it is dark-themed */
+        setTheme(0);
+      },
+      onLeaveBackward: function () {
+        machineEl.classList.add('is-done');
+        document.querySelectorAll('.mlayer').forEach(function (l) { l.classList.add('is-done'); });
+        setTheme(0);
+      },
+      onEnterForward: function () {
+        machineEl.classList.remove('is-done');
+        document.querySelectorAll('.mlayer').forEach(function (l) { l.classList.remove('is-done'); });
       },
       onEnterBackward: function () {
         machineEl.classList.remove('is-done');

@@ -615,7 +615,11 @@ main{position:relative;z-index:1}
 
 /* ── theme inversion, the way their section-light containers work ───────── */
 body{transition:background-color .7s ease}
-body.theme-light{background:var(--paper)!important}
+.mground{
+  position:absolute;inset:0;background:var(--paper);
+  opacity:0;transition:opacity .7s ease;pointer-events:none;
+}
+body.theme-light .mground{opacity:1}
 body.theme-light .machine::after{
   background:linear-gradient(100deg,var(--paper) 20%,rgba(216,213,206,.66) 38%,transparent 58%);
 }
