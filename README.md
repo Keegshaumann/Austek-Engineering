@@ -11,7 +11,7 @@ No build step, no framework, no runtime dependencies.
 index.html              markup + copy
 assets/css/styles.css   all styling (design tokens in :root at the top)
 assets/js/main.js       ~6.5KB of progressive enhancement
-assets/js/weld.js       ~7KB hero weld animation (decorative, droppable)
+assets/js/weld.js       ~13KB weld motif: hero seam, side seam, weld boxes
 assets/img/             photography, logo, favicon
 ```
 
@@ -52,15 +52,32 @@ to compile, no server-side runtime.
 
 ## The hero animation
 
-`assets/js/weld.js` draws a torch running a seam along the bottom edge of the
-dark hero panel, laying a bead that cools through the heat colours and throwing
-sparks. Plain 2D canvas, no library.
+`assets/js/weld.js` carries three pieces of the same motif:
+
+1. **Hero seam** — a torch runs the bottom edge of the dark hero panel, laying
+   a bead that cools through the heat colours and throwing sparks.
+2. **Side seam** — a seam down the left gutter that welds as you scroll. The
+   torch sits at a fixed screen height, so everything above it reads as already
+   welded and everything below as untouched. The arc and sparks only fire while
+   the page is actually moving. Desktop only (>=1000px), where the gutter is
+   wide enough to clear the content.
+3. **Weld boxes** — a bead traces the outline of an element on reveal, bright
+   tip first, cooling behind it. Applied by adding `data-weldbox` to any
+   element; the perimeter is measured at runtime and kept in sync by a
+   `ResizeObserver`. Currently on the job-spec block, the "Your plant." card
+   and the enquiry form — spaced out deliberately rather than on every card.
 
 It is deliberately cheap: it pauses via `IntersectionObserver` when the hero
 scrolls out of view, pauses again on `visibilitychange`, caps sparks at 170, and
 renders a single static frame under `prefers-reduced-motion`. Tuning constants
 (`speed`, the cooling `decay`, `MAX_SPARKS`, the `STOPS` colour ramp) sit at the
 top of the file.
+
+Every grid on the page uses explicit column counts chosen so the item count
+always divides evenly at each breakpoint — six capability cards over 3/2/1, five
+process steps over 5/2/1 with the fifth spanning, six spec rows over 6/3/2. This
+is deliberate: `auto-fit` left dead cells at intermediate widths, which read as
+a broken layout rather than a design choice.
 
 ## The enquiry form
 
