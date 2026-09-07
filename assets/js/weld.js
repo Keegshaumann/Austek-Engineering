@@ -164,7 +164,9 @@
   }
 
   /* ==========================================================
-     2 · SIDE SEAM — welds downward as you scroll
+     2 · SIDE SEAM — a weld that fills as a scroll progress bar
+     The track is the whole page. Bead length == how far you are
+     through it, so at the footer the seam is fully welded.
      ========================================================== */
   function sideSeam() {
     if (reduced) return;
@@ -179,11 +181,7 @@
     if (!ctx) return;
     var W = 46, H = 0, dpr = 1;
     var sparks = [], raf = 0, last = 0, running = false;
-    var lastScroll = window.scrollY, vel = 0;
-
-    /* the torch sits at a fixed height on screen; everything above
-       it has been welded, everything below has not */
-    var FRONT = 0.56;
+    var lastScroll = window.scrollY, vel = 0, shown = 0;
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -191,73 +189,92 @@
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    /* gentle wander so it reads as hand-run, tied to document position */
-    function seamX(docY) {
-      return 23 + Math.sin(docY * 0.0016) * 5 + Math.sin(docY * 0.0041 + 2.1) * 2.2;
+
+    /* the track is fixed on screen, so wander is a function of screen y */
+    function seamX(y) {
+      return 23 + Math.sin(y * 0.0118) * 4 + Math.sin(y * 0.0307 + 2.1) * 1.6;
+    }
+
+    function progress() {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) return 0;
+      var p = window.scrollY / max;
+      return p < 0 ? 0 : p > 1 ? 1 : p;
     }
 
     function frame(now) {
       if (!running) return;
       var dt = Math.min((now - last) / 1000 || 0, 0.05); last = now;
+
       var sy = window.scrollY;
       vel = vel * 0.86 + Math.abs(sy - lastScroll) * 0.14;
       lastScroll = sy;
 
-      var fy = H * FRONT;                    // torch, in screen coords
-      var maxY = document.body.scrollHeight - window.innerHeight;
-      var atEnd = sy >= maxY - 2;
+      /* ease the drawn value so the arc glides instead of snapping */
+      var target = progress();
+      shown += (target - shown) * Math.min(1, dt * 9);
+      var fy = shown * H;
 
       ctx.clearRect(0, 0, W, H);
 
-      // un-welded track below the torch
+      /* untouched track, full height — warm neutral so it reads on both
+         the paper sections and the dark hero/contact/footer */
       ctx.beginPath();
-      for (var y = fy; y <= H; y += 6) ctx.lineTo(seamX(sy + y), y);
-      ctx.strokeStyle = 'rgba(26,27,29,.10)';
+      for (var y = 0; y <= H; y += 6) ctx.lineTo(seamX(y), y);
+      ctx.strokeStyle = 'rgba(150,140,130,.28)';
       ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
 
-      // cooled bead above the torch
-      ctx.beginPath();
-      for (var y2 = 0; y2 <= fy; y2 += 6) ctx.lineTo(seamX(sy + y2), y2);
-      ctx.strokeStyle = 'rgba(122,74,44,.5)';
-      ctx.lineWidth = 3.2; ctx.stroke();
-
-      // the hot stretch just behind the torch
-      ctx.globalCompositeOperation = 'lighter';
-      var TAIL = 132;
-      for (var y3 = fy; y3 > fy - TAIL; y3 -= 5) {
-        var h = 1 - (fy - y3) / TAIL;
-        h *= h;
+      /* cooled bead: everything already scrolled past */
+      if (fy > 1) {
         ctx.beginPath();
-        ctx.moveTo(seamX(sy + y3), y3);
-        ctx.lineTo(seamX(sy + y3 - 5), y3 - 5);
+        for (var y2 = 0; y2 <= fy; y2 += 6) ctx.lineTo(seamX(y2), y2);
+        ctx.lineTo(seamX(fy), fy);
+        ctx.strokeStyle = 'rgba(198,108,54,.8)';
+        ctx.lineWidth = 3.4; ctx.stroke();
+      }
+
+      /* hot stretch just behind the arc */
+      ctx.globalCompositeOperation = 'lighter';
+      var TAIL = 120;
+      for (var y3 = fy; y3 > Math.max(0, fy - TAIL); y3 -= 5) {
+        var h = 1 - (fy - y3) / TAIL; h *= h;
+        ctx.beginPath();
+        ctx.moveTo(seamX(y3), y3);
+        ctx.lineTo(seamX(y3 - 5), y3 - 5);
         ctx.strokeStyle = heatColor(h, Math.min(1, 0.3 + h));
         ctx.lineWidth = 2.6 + h * 5;
         ctx.stroke();
       }
 
-      // arc + sparks only while actually moving
-      if (vel > 0.6 && !atEnd) {
-        var hx = seamX(sy + fy);
-        var g = ctx.createRadialGradient(hx, fy, 0, hx, fy, 64);
-        g.addColorStop(0, 'rgba(255,248,232,.75)');
-        g.addColorStop(0.2, 'rgba(255,186,88,.34)');
+      /* the arc itself, only while the page is actually moving */
+      var moving = vel > 0.6 && target < 0.999;
+      if (fy > 0.5) {
+        var hx = seamX(fy);
+        var rad = moving ? 64 : 26;
+        var g = ctx.createRadialGradient(hx, fy, 0, hx, fy, rad);
+        g.addColorStop(0, moving ? 'rgba(255,248,232,.75)' : 'rgba(255,190,120,.4)');
+        g.addColorStop(0.2, 'rgba(255,186,88,.32)');
         g.addColorStop(1, 'rgba(255,91,26,0)');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, fy, 64, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = 'rgba(255,252,244,.95)';
-        ctx.beginPath(); ctx.arc(hx, fy, 3, 0, Math.PI * 2); ctx.fill();
-        if (sparks.length < 90 && Math.random() < 0.8)
-          for (var s = 0; s < 2; s++) sparks.push(makeSpark(hx, fy, Math.random() > 0.4));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, fy, rad, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = moving ? 'rgba(255,252,244,.95)' : 'rgba(255,170,110,.85)';
+        ctx.beginPath(); ctx.arc(hx, fy, moving ? 3.2 : 2.4, 0, Math.PI * 2); ctx.fill();
+
+        if (moving && sparks.length < 90 && Math.random() < 0.8)
+          for (var k = 0; k < 2; k++) sparks.push(makeSpark(hx, fy, Math.random() > 0.4));
       }
+
       stepSparks(sparks, dt);
       drawSparks(ctx, sparks);
       ctx.globalCompositeOperation = 'source-over';
 
       raf = requestAnimationFrame(frame);
     }
+
     function start() { if (running) return; running = true; last = performance.now(); raf = requestAnimationFrame(frame); }
     function stop() { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
 
     resize();
+    shown = progress();   // land on the right fill if the page opens part-scrolled
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 150); }, { passive: true });
     document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
