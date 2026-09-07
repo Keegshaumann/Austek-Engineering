@@ -56,13 +56,15 @@ to compile, no server-side runtime.
 
 1. **Hero seam** — a torch runs the bottom edge of the dark hero panel, laying
    a bead that cools through the heat colours and throwing sparks.
-2. **Side seam** — a scroll progress bar in the left gutter, drawn as a weld.
-   The track is the whole page; the bead's length is how far through it you
-   are, so the seam is fully welded by the time you reach the footer. The arc
-   sits at the fill point and only sparks while the page is actually moving,
-   so a page at rest is quiet. The drawn value eases toward the true scroll
-   position so the arc glides rather than snapping. Desktop only (>=1000px),
-   where the gutter is wide enough to clear the content.
+2. **Side seam** — a scroll progress bar in the left gutter, drawn as a weld
+   bead. A straight 7px channel runs the height of the viewport, inset below
+   the fixed header so the arc is never hidden behind it. The filled length is
+   how far through the page you are, so the bar is fully welded at the footer.
+   Weld character comes from the stacked crescent ripples in the bead rather
+   than from a wandering line — the track has to be straight to read as a bar.
+   The arc sits at the fill point and only sparks while the page is moving; at
+   rest it settles to a dim ember. Desktop only (>=1000px), where the gutter
+   clears the content.
 3. **Weld boxes** — a bead traces the outline of an element on reveal, bright
    tip first, cooling behind it. Applied by adding `data-weldbox` to any
    element; the perimeter is measured at runtime and kept in sync by a

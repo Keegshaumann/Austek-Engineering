@@ -164,9 +164,10 @@
   }
 
   /* ==========================================================
-     2 · SIDE SEAM — a weld that fills as a scroll progress bar
-     The track is the whole page. Bead length == how far you are
-     through it, so at the footer the seam is fully welded.
+     2 · SIDE SEAM — scroll progress, drawn as a weld bead
+     Straight track so it reads as a bar; the filled length is
+     how far through the page you are. Weld character comes from
+     the stacked ripples in the bead, not from a wandering line.
      ========================================================== */
   function sideSeam() {
     if (reduced) return;
@@ -179,7 +180,13 @@
 
     var ctx = cv.getContext('2d');
     if (!ctx) return;
+
     var W = 46, H = 0, dpr = 1;
+    var X = 22;          // bar centre
+    var BAR = 7;         // bar width
+    var TOP = 76;        // clear the fixed header so the head is never hidden
+    var GAP = 18;        // breathing room at the bottom
+    var HOT = 38;        // only the last stretch behind the head glows
     var sparks = [], raf = 0, last = 0, running = false;
     var lastScroll = window.scrollY, vel = 0, shown = 0;
 
@@ -189,12 +196,6 @@
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-
-    /* the track is fixed on screen, so wander is a function of screen y */
-    function seamX(y) {
-      return 23 + Math.sin(y * 0.0118) * 4 + Math.sin(y * 0.0307 + 2.1) * 1.6;
-    }
-
     function progress() {
       var max = document.documentElement.scrollHeight - window.innerHeight;
       if (max <= 0) return 0;
@@ -202,67 +203,76 @@
       return p < 0 ? 0 : p > 1 ? 1 : p;
     }
 
+    /* stacked crescents, the way a real bead looks */
+    function ripples(toY) {
+      ctx.lineWidth = 1.1;
+      for (var y = TOP + 3; y < toY; y += 5) {
+        var hot = Math.max(0, 1 - (toY - y) / HOT);
+        ctx.beginPath();
+        ctx.arc(X, y, BAR / 2 - 0.6, Math.PI * 0.12, Math.PI * 0.88);
+        ctx.strokeStyle = hot > 0.05
+          ? heatColor(Math.min(1, 0.55 + hot * 0.45), 0.5)
+          : 'rgba(255,214,180,.20)';
+        ctx.stroke();
+      }
+    }
+
     function frame(now) {
       if (!running) return;
       var dt = Math.min((now - last) / 1000 || 0, 0.05); last = now;
-
       var sy = window.scrollY;
       vel = vel * 0.86 + Math.abs(sy - lastScroll) * 0.14;
       lastScroll = sy;
 
-      /* ease the drawn value so the arc glides instead of snapping */
       var target = progress();
       shown += (target - shown) * Math.min(1, dt * 9);
-      var fy = shown * H;
+      var botY = H - GAP;
+      var fy = TOP + shown * Math.max(0, botY - TOP);
 
       ctx.clearRect(0, 0, W, H);
 
-      /* untouched track, full height — warm neutral so it reads on both
-         the paper sections and the dark hero/contact/footer */
+      /* empty channel, full height */
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      for (var y = 0; y <= H; y += 6) ctx.lineTo(seamX(y), y);
-      ctx.strokeStyle = 'rgba(150,140,130,.28)';
-      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
+      ctx.moveTo(X, TOP); ctx.lineTo(X, botY);
+      ctx.strokeStyle = 'rgba(150,140,130,.22)';
+      ctx.lineWidth = BAR;
+      ctx.stroke();
 
-      /* cooled bead: everything already scrolled past */
-      if (fy > 1) {
+      /* filled length — the welded run */
+      if (fy > TOP + 1) {
+        var span = Math.max(1, fy - TOP);
+        var g = ctx.createLinearGradient(0, TOP, 0, fy);
+        g.addColorStop(0, 'rgba(150,86,48,.95)');
+        g.addColorStop(Math.max(0, Math.min(0.999, 1 - HOT / span)), 'rgba(196,104,50,.98)');
+        g.addColorStop(1, 'rgba(255,150,60,1)');
         ctx.beginPath();
-        for (var y2 = 0; y2 <= fy; y2 += 6) ctx.lineTo(seamX(y2), y2);
-        ctx.lineTo(seamX(fy), fy);
-        ctx.strokeStyle = 'rgba(198,108,54,.8)';
-        ctx.lineWidth = 3.4; ctx.stroke();
-      }
-
-      /* hot stretch just behind the arc */
-      ctx.globalCompositeOperation = 'lighter';
-      var TAIL = 120;
-      for (var y3 = fy; y3 > Math.max(0, fy - TAIL); y3 -= 5) {
-        var h = 1 - (fy - y3) / TAIL; h *= h;
-        ctx.beginPath();
-        ctx.moveTo(seamX(y3), y3);
-        ctx.lineTo(seamX(y3 - 5), y3 - 5);
-        ctx.strokeStyle = heatColor(h, Math.min(1, 0.3 + h));
-        ctx.lineWidth = 2.6 + h * 5;
+        ctx.moveTo(X, TOP); ctx.lineTo(X, fy);
+        ctx.strokeStyle = g;
+        ctx.lineWidth = BAR;
         ctx.stroke();
+
+        ripples(fy);
       }
 
-      /* the arc itself, only while the page is actually moving */
+      /* head: the arc sitting at the fill point */
+      ctx.globalCompositeOperation = 'lighter';
       var moving = vel > 0.6 && target < 0.999;
-      if (fy > 0.5) {
-        var hx = seamX(fy);
-        var rad = moving ? 64 : 26;
-        var g = ctx.createRadialGradient(hx, fy, 0, hx, fy, rad);
-        g.addColorStop(0, moving ? 'rgba(255,248,232,.75)' : 'rgba(255,190,120,.4)');
-        g.addColorStop(0.2, 'rgba(255,186,88,.32)');
-        g.addColorStop(1, 'rgba(255,91,26,0)');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, fy, rad, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = moving ? 'rgba(255,252,244,.95)' : 'rgba(255,170,110,.85)';
-        ctx.beginPath(); ctx.arc(hx, fy, moving ? 3.2 : 2.4, 0, Math.PI * 2); ctx.fill();
+      if (fy > TOP) {
+        var rad = moving ? 34 : 15;
+        var gg = ctx.createRadialGradient(X, fy, 0, X, fy, rad);
+        gg.addColorStop(0, moving ? 'rgba(255,248,232,.95)' : 'rgba(255,196,130,.5)');
+        gg.addColorStop(0.25, 'rgba(255,186,88,.34)');
+        gg.addColorStop(1, 'rgba(255,91,26,0)');
+        ctx.fillStyle = gg;
+        ctx.beginPath(); ctx.arc(X, fy, rad, 0, Math.PI * 2); ctx.fill();
 
-        if (moving && sparks.length < 90 && Math.random() < 0.8)
-          for (var k = 0; k < 2; k++) sparks.push(makeSpark(hx, fy, Math.random() > 0.4));
+        ctx.fillStyle = moving ? 'rgba(255,253,247,.98)' : 'rgba(255,178,116,.9)';
+        ctx.beginPath(); ctx.arc(X, fy, moving ? BAR / 2 : BAR / 2 - 1.2, 0, Math.PI * 2); ctx.fill();
+
+        if (moving && sparks.length < 80 && Math.random() < 0.75)
+          for (var k = 0; k < 2; k++) sparks.push(makeSpark(X, fy, Math.random() > 0.4));
       }
-
       stepSparks(sparks, dt);
       drawSparks(ctx, sparks);
       ctx.globalCompositeOperation = 'source-over';
@@ -274,7 +284,7 @@
     function stop() { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
 
     resize();
-    shown = progress();   // land on the right fill if the page opens part-scrolled
+    shown = progress();
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 150); }, { passive: true });
     document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
