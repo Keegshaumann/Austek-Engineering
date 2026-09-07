@@ -643,3 +643,8 @@ body.theme-light .burger span{background:var(--ink)}
 .mlayer{position:fixed;inset:0;z-index:50;pointer-events:none}
 .mlayer .mcard{pointer-events:auto}
 .mlayer .subnav{pointer-events:none}
+
+/* the fixed layer steps aside with the machine, so the chapter index does not
+   sit over the contact form and footer */
+.mlayer{transition:opacity .5s ease}
+.mlayer.is-done{opacity:0;pointer-events:none}

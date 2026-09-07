@@ -573,8 +573,14 @@
     new ScrollObserverRef({
       target: chapters,
       enter: 'top top', leave: 'bottom bottom',
-      onLeave: function () { machineEl.classList.add('is-done'); },
-      onEnterBackward: function () { machineEl.classList.remove('is-done'); }
+      onLeave: function () {
+        machineEl.classList.add('is-done');
+        document.querySelectorAll('.mlayer').forEach(function (l) { l.classList.add('is-done'); });
+      },
+      onEnterBackward: function () {
+        machineEl.classList.remove('is-done');
+        document.querySelectorAll('.mlayer').forEach(function (l) { l.classList.remove('is-done'); });
+      }
     });
   }
 
