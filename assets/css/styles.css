@@ -509,7 +509,7 @@ body{background:var(--void)}
 
 /* keeps copy readable where it overlaps the drawing */
 .machine::after{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(100deg,var(--void) 20%,rgba(23,24,26,.62) 38%,transparent 58%);
 }
 
@@ -539,7 +539,7 @@ main{position:relative;z-index:1}
   transition:opacity .35s ease}
 
 /* content that hangs off the parts */
-.mcards{position:absolute;inset:0;pointer-events:none}
+.mcards{position:absolute;inset:0;z-index:2;pointer-events:none}
 .mcard{
   position:absolute;top:clamp(88px,11vh,132px);left:clamp(20px,5vw,88px);
   width:min(38vw,440px);
