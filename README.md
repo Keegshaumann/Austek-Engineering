@@ -10,7 +10,8 @@ No build step, no framework, no runtime dependencies.
 ```
 index.html              markup + copy
 assets/css/styles.css   all styling (design tokens in :root at the top)
-assets/js/main.js       ~6KB of progressive enhancement
+assets/js/main.js       ~6.5KB of progressive enhancement
+assets/js/weld.js       ~7KB hero weld animation (decorative, droppable)
 assets/img/             photography, logo, favicon
 ```
 
@@ -33,7 +34,9 @@ to compile, no server-side runtime.
 1. **Content first.** Every word is in the HTML and readable with JavaScript
    disabled, blocked or broken. Animation is enhancement, never a prerequisite
    for seeing the page. `main.js` adds a `.js` class before anything is hidden,
-   and a 4-second failsafe reveals anything an observer missed.
+   and a 4-second failsafe reveals anything an observer missed. The hero
+   animation is purely decorative — delete the `weld.js` script tag and the
+   hero still reads correctly.
 2. **Fast.** The previous build shipped ~790KB of JavaScript (three.js 670KB +
    anime.js 118KB) to render a WebGL scene. This one ships ~6.5KB. All images
    carry explicit `width`/`height` so nothing shifts while loading, and
@@ -46,6 +49,18 @@ to compile, no server-side runtime.
    service list.
 5. **Accessible.** Skip link, labelled form fields with inline validation
    messages, visible focus rings, and `prefers-reduced-motion` respected.
+
+## The hero animation
+
+`assets/js/weld.js` draws a torch running a seam along the bottom edge of the
+dark hero panel, laying a bead that cools through the heat colours and throwing
+sparks. Plain 2D canvas, no library.
+
+It is deliberately cheap: it pauses via `IntersectionObserver` when the hero
+scrolls out of view, pauses again on `visibilitychange`, caps sparks at 170, and
+renders a single static frame under `prefers-reduced-motion`. Tuning constants
+(`speed`, the cooling `decay`, `MAX_SPARKS`, the `STOPS` colour ramp) sit at the
+top of the file.
 
 ## The enquiry form
 
