@@ -1,99 +1,78 @@
-# Austek Engineering CC — landing page
+# Austek Engineering CC — website
 
-Single-page site for Austek Engineering CC (Brakpan, Gauteng). Static HTML/CSS/JS,
-no build step, no dependencies to install. Animation is [anime.js](https://animejs.com) v4.5.0,
-vendored at `assets/js/anime.umd.min.js`.
+Static marketing site for Austek Engineering CC (Brakpan, Gauteng): coded welding,
+stainless fabrication, boilermaking, pipefitting and plant maintenance.
 
-## Run it
+No build step, no framework, no runtime dependencies.
+
+## Files
+
+```
+index.html              markup + copy
+assets/css/styles.css   all styling (design tokens in :root at the top)
+assets/js/main.js       ~6KB of progressive enhancement
+assets/img/             photography, logo, favicon
+```
+
+## Running locally
 
 ```bash
-python3 -m http.server 4820 --directory .
+python3 -m http.server 4820
 ```
 
-Then open http://localhost:4820. Any static host works — Netlify, Vercel, Cloudflare
-Pages, S3, or plain shared hosting: upload the folder as-is.
+Then open http://localhost:4820
 
-## Structure
+## Hosting
 
+Upload the folder as-is to the Hostinger document root. It works unchanged on any
+static host (Hostinger, Netlify, Vercel, Cloudflare Pages, nginx, Apache). Nothing
+to compile, no server-side runtime.
+
+## Principles this rebuild follows
+
+1. **Content first.** Every word is in the HTML and readable with JavaScript
+   disabled, blocked or broken. Animation is enhancement, never a prerequisite
+   for seeing the page. `main.js` adds a `.js` class before anything is hidden,
+   and a 4-second failsafe reveals anything an observer missed.
+2. **Fast.** The previous build shipped ~790KB of JavaScript (three.js 670KB +
+   anime.js 118KB) to render a WebGL scene. This one ships ~6.5KB. All images
+   carry explicit `width`/`height` so nothing shifts while loading, and
+   below-the-fold images are lazy-loaded.
+3. **Built to convert.** The phone number is in the header, in the hero, in the
+   contact block, in the footer, and in a floating call button on mobile — a
+   plant manager with a breakdown should never hunt for it.
+4. **Findable.** Descriptive title and meta description, Open Graph tags, and
+   `LocalBusiness` JSON-LD carrying the address, phone, founding date and
+   service list.
+5. **Accessible.** Skip link, labelled form fields with inline validation
+   messages, visible focus rings, and `prefers-reduced-motion` respected.
+
+## The enquiry form
+
+By default the form validates, then opens the visitor's email client addressed to
+Austek. That works, but it loses enquiries whenever someone has no mail client
+configured — which on a phone is common.
+
+To capture enquiries properly, set `FORM_ENDPOINT` at the top of
+`assets/js/main.js`:
+
+```js
+var FORM_ENDPOINT = 'https://formspree.io/f/XXXXXXX';
 ```
-index.html
-assets/css/styles.css
-assets/js/anime.umd.min.js     anime.js v4.5.0 (UMD, vendored — no CDN dependency)
-assets/js/main.js              all motion + interactions
-assets/img/                    photos lifted from the 2025 company profile PDF
-```
 
-Fonts (Space Grotesk / Inter / JetBrains Mono) load from Google Fonts. Everything
-else is local.
+It posts JSON and works with Formspree or Web3Forms as-is. On success the form
+shows a confirmation inline; on failure it falls back to the mailto behaviour so
+an enquiry is never silently lost. A honeypot field is already in place for bots.
 
-## Design notes
+## Things worth doing next
 
-Visual language follows animejs.com — near-black stage, monospace technical
-callouts, a theme flip to steel-paper, a scroll-scrubbed hero mechanism — retuned
-for a fabricator: weld-arc orange instead of red, and two pieces of steel that
-build themselves.
-
-- **Hero** — a steel platform erects itself on a loop: base plates land, columns
-  rise, the main beam lands, gussets and walkway go in, bracing shoots across,
-  handrail stands, with a weld flash and spark burst at every joint and a live
-  status line (*Raising columns · Landing the main beam · Bracing the frame*).
-- **Process** — a scroll-scrubbed **pipe spool assembling itself** through the
-  five passes of a real weld (cut & prep → fit-up → root → fill & cap → inspect),
-  annotated like a shop drawing with a title block.
-
-Motion is anime.js end to end — no hand-rolled scroll listeners, no
-IntersectionObserver:
-
-- `createTimeline()` for the hero copy, and for the looping hero build.
-- **Scroll Observer** (`onScroll()` / `new ScrollObserver()`) for everything
-  scroll-driven: section reveals, the stat counters, the nav's sticky and
-  light/dark inversion, the contact image drift, and the scrubbed spool.
-- `onScroll({ sync: 0.2 })` scrubs the whole spool timeline off scroll position.
-- `svg.createDrawable()` for the line-draw on leaders, braces and handrails.
-- `stagger()` throughout.
-
-Two API notes worth keeping, both verified against the v4.5.0 bundle:
-
-- The string form `ease: 'cubicBezier(...)'` was **removed** in v4 — pass the
-  `cubicBezier()` function instead. The string form fails silently and takes the
-  whole `animate()` call with it.
-- On a Scroll Observer, `enter`/`leave` read as `"<container> <target>"` and
-  default to `'end start'` / `'start end'`. The play-once flag is `repeat: false`,
-  **not** `once: true` — and it is deliberately not used here, because on
-  completion the observer reverts the animation and wipes the reveal.
-
-`prefers-reduced-motion` is respected — the spool renders finished, the hero
-structure renders assembled, and the choreography is skipped.
-
-## Content
-
-All copy is drawn from the 2025 company profile PDF and the client's own notes.
-Nothing about certifications, standards or clients is invented. Specifically:
-
-- "Coded welders" and "stainless steel specialists" — the client's stated
-  differentiators.
-- Heineken South Africa (Sedibeng) and Edward Snell & Co. (Isando) — current sites,
-  per the client.
-- Founded 1995, black-owned, CK 96/26279/23, 15 Milner Avenue Brakpan — from the profile.
-
-## Before it goes live
-
-1. **The quote form has no backend.** It opens the visitor's mail client via
-   `mailto:` (`assets/js/main.js`, the `#quoteForm` submit handler). Swap it for a
-   real endpoint — Formspree, Netlify Forms, or a small handler — so enquiries
-   aren't lost when someone has no mail client configured.
-2. **Email address.** `ykhunoo@yahoo.com` is what's on the profile. A domain address
-   (e.g. `info@austekengineering.co.za`) would read better to industrial buyers.
-3. **Logo.** The client said they don't really have one. The mark in the nav/footer
-   is a new SVG (chevron plates + arc dot), redrawn clean so it scales and works on
-   light and dark. The original raster logo from the profile PDF is kept at
-   `assets/img/austek-logo.png` for reference. If they want the original instead,
-   it needs a proper vector redraw — the PDF copy is only 250px.
-4. **Photos.** All from the profile PDF; two were cropped to remove a phone
-   watermark. Better on-site photography would lift the Work section a lot. The
-   silo, pipework and plant-room shots are genuine Austek jobs; the stainless-stock
-   and valve-manifold images came from the profile's stock imagery — worth replacing
-   with real job photos.
-5. **MD portrait.** The client is sending one. There's a natural slot in the About
-   section beside the Yehgandra Khunoo quote.
-6. Add a real domain, then set the `og:image` URL to an absolute one for link previews.
+- [ ] Point `FORM_ENDPOINT` at a real endpoint so enquiries land in an inbox.
+- [ ] Update the canonical URL in `index.html` if the live domain differs from
+      `austekengineering.co.za`.
+- [ ] Export a dedicated 1200x630 Open Graph share image; it currently reuses
+      the hero photograph.
+- [ ] Self-host the two Google fonts to drop the third-party request.
+- [ ] Confirm the "31 years" and "20 years at Heineken" figures with the client
+      before they go stale — they are hardcoded in the trust bar.
+- [ ] Add real project names/dates to the gallery captions if the client is
+      happy to publish them.
