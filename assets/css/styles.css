@@ -390,3 +390,49 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   .wb-bead{stroke-dashoffset:0}
   .wb-tip{display:none}
 }
+
+/* ───────── phones: tighten the rhythm ─────────
+   The desktop scale left the page 14 screens tall on a 375px phone,
+   with the hero alone taking 1.5 screens before any proof of work. */
+@media (max-width:640px){
+  :root{--sec:clamp(52px,11vw,132px)}
+
+  /* hero: smaller floor on the display type, tighter internal gaps */
+  .hero{padding-top:calc(var(--hdr) + 32px);padding-bottom:40px}
+  .hero__h1{font-size:clamp(2.55rem,12.5vw,7.2rem)}
+  .hero__sub{margin-top:16px;font-size:1rem;line-height:1.6}
+  .hero__cta{margin-top:24px;gap:10px}
+  .creds{margin-top:26px;padding-top:18px;gap:9px}
+  .creds li{font-size:11.5px;gap:11px}
+  .hero__fig{max-width:none}
+  .hero__fig img{aspect-ratio:4/3}
+
+  /* section headers carried desktop air */
+  .shead{margin-bottom:30px}
+  .shead__k{margin-bottom:13px}
+  .shead__p{margin-top:14px;font-size:15px}
+
+  /* gallery: a grid reads as work, a single column reads as a scroll */
+  .gal{grid-template-columns:repeat(2,1fr);grid-auto-rows:140px;gap:8px}
+  .gal__i{grid-column:span 1;grid-row:span 1}
+  .gal__i--tall{grid-column:span 1;grid-row:span 2}
+  .gal__c{padding:10px 11px;font-size:9.5px;letter-spacing:.08em}
+
+  /* about was the worst offender at 2.4 screens */
+  .about__in{gap:26px}
+  .about__fig{max-width:none}
+  .about__fig img{aspect-ratio:4/3}
+  .quote{margin-bottom:24px;padding:16px 0 16px 18px}
+  .prose{gap:14px}
+  .prose p{font-size:14.5px}
+  .vals{margin-top:36px}
+
+  /* contact */
+  .det{margin-top:26px;gap:18px}
+  .det li{padding-bottom:16px}
+  .form{padding:20px;gap:15px}
+
+  .cards .card,.site,.val,.step{padding:20px}
+  .ftr{padding-top:44px}
+  .ftr__in{gap:32px;padding-bottom:32px}
+}
