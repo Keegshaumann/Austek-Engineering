@@ -16,12 +16,12 @@
 
   /* ---------- shared: heat -> colour ---------- */
   var STOPS = [
-    [0.00, 46, 42, 38],
-    [0.12, 120, 44, 18],
-    [0.30, 214, 74, 20],
-    [0.52, 255, 128, 32],
-    [0.74, 255, 190, 92],
-    [1.00, 255, 246, 226]
+    [0.00, 42, 58, 78],
+    [0.12, 30, 76, 128],
+    [0.30, 32, 112, 200],
+    [0.52, 60, 156, 240],
+    [0.74, 150, 205, 250],
+    [1.00, 244, 250, 255]
   ];
   function heatColor(h, a) {
     var i = 0;
@@ -99,8 +99,8 @@
         var t = i / SAMPLES;
         i ? ctx.lineTo(seamX(t), seamY(t)) : ctx.moveTo(seamX(t), seamY(t));
       }
-      ctx.strokeStyle = 'rgba(236,234,230,.10)'; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
-      ctx.strokeStyle = 'rgba(236,234,230,.05)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = 'rgba(238,244,251,.10)'; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
+      ctx.strokeStyle = 'rgba(238,244,251,.05)'; ctx.lineWidth = 1; ctx.stroke();
     }
     function bead() {
       for (var i = 0; i < SAMPLES - 1; i++) {
@@ -116,12 +116,12 @@
     }
     function glow(x, y) {
       var r = 130, g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, 'rgba(255,248,232,.85)');
-      g.addColorStop(0.16, 'rgba(255,186,88,.42)');
-      g.addColorStop(0.45, 'rgba(255,91,26,.16)');
-      g.addColorStop(1, 'rgba(255,91,26,0)');
+      g.addColorStop(0, 'rgba(240,250,255,.85)');
+      g.addColorStop(0.16, 'rgba(120,190,255,.42)');
+      g.addColorStop(0.45, 'rgba(50,140,235,.16)');
+      g.addColorStop(1, 'rgba(50,140,235,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = 'rgba(255,252,244,.95)';
+      ctx.fillStyle = 'rgba(248,252,255,.95)';
       ctx.beginPath(); ctx.arc(x, y, 4.4, 0, Math.PI * 2); ctx.fill();
     }
     function frame(now) {
@@ -212,7 +212,7 @@
         ctx.arc(X, y, BAR / 2 - 0.6, Math.PI * 0.12, Math.PI * 0.88);
         ctx.strokeStyle = hot > 0.05
           ? heatColor(Math.min(1, 0.55 + hot * 0.45), 0.5)
-          : 'rgba(255,214,180,.20)';
+          : 'rgba(198,224,250,.22)';
         ctx.stroke();
       }
     }
@@ -235,7 +235,7 @@
       ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(X, TOP); ctx.lineTo(X, botY);
-      ctx.strokeStyle = 'rgba(150,140,130,.22)';
+      ctx.strokeStyle = 'rgba(110,135,165,.24)';
       ctx.lineWidth = BAR;
       ctx.stroke();
 
@@ -243,9 +243,9 @@
       if (fy > TOP + 1) {
         var span = Math.max(1, fy - TOP);
         var g = ctx.createLinearGradient(0, TOP, 0, fy);
-        g.addColorStop(0, 'rgba(150,86,48,.95)');
-        g.addColorStop(Math.max(0, Math.min(0.999, 1 - HOT / span)), 'rgba(196,104,50,.98)');
-        g.addColorStop(1, 'rgba(255,150,60,1)');
+        g.addColorStop(0, 'rgba(46,84,138,.95)');
+        g.addColorStop(Math.max(0, Math.min(0.999, 1 - HOT / span)), 'rgba(30,106,198,.98)');
+        g.addColorStop(1, 'rgba(92,176,255,1)');
         ctx.beginPath();
         ctx.moveTo(X, TOP); ctx.lineTo(X, fy);
         ctx.strokeStyle = g;
@@ -261,13 +261,13 @@
       if (fy > TOP) {
         var rad = moving ? 34 : 15;
         var gg = ctx.createRadialGradient(X, fy, 0, X, fy, rad);
-        gg.addColorStop(0, moving ? 'rgba(255,248,232,.95)' : 'rgba(255,196,130,.5)');
-        gg.addColorStop(0.25, 'rgba(255,186,88,.34)');
-        gg.addColorStop(1, 'rgba(255,91,26,0)');
+        gg.addColorStop(0, moving ? 'rgba(240,250,255,.95)' : 'rgba(150,205,255,.5)');
+        gg.addColorStop(0.25, 'rgba(120,190,255,.34)');
+        gg.addColorStop(1, 'rgba(50,140,235,0)');
         ctx.fillStyle = gg;
         ctx.beginPath(); ctx.arc(X, fy, rad, 0, Math.PI * 2); ctx.fill();
 
-        ctx.fillStyle = moving ? 'rgba(255,253,247,.98)' : 'rgba(255,178,116,.9)';
+        ctx.fillStyle = moving ? 'rgba(248,252,255,.98)' : 'rgba(140,200,255,.9)';
         ctx.beginPath(); ctx.arc(X, fy, moving ? BAR / 2 : BAR / 2 - 1.2, 0, Math.PI * 2); ctx.fill();
 
         if (moving && sparks.length < 80 && Math.random() < 0.75)

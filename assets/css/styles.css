@@ -1,39 +1,39 @@
 /* ==========================================================
    Austek Engineering CC — stylesheet
-   Paper ground, ink text, arc-orange accent.
-   Dark panels bookend the page: hero, contact, footer.
+   White ground, navy ink, arc-blue accent.
+   Navy panels bookend the page: hero, contact, footer.
    ========================================================== */
 
 :root{
   /* light ground */
-  --paper:#e9e6e0;
-  --paper-2:#e2ded7;
-  --paper-3:#f4f2ee;
-  --rule:rgba(26,27,29,.15);
-  --rule-2:rgba(26,27,29,.28);
+  --paper:#f5f8fc;
+  --paper-2:#e9f0f8;
+  --paper-3:#ffffff;
+  --rule:rgba(13,27,42,.13);
+  --rule-2:rgba(13,27,42,.26);
 
   /* ink */
-  --ink:#1a1b1d;
-  --ink-2:#44464a;
-  --ink-3:#65676b;
-  --ink-4:#8a8c90;
+  --ink:#0d1b2a;
+  --ink-2:#33465c;
+  --ink-3:#57697f;
+  --ink-4:#8496aa;
 
   /* dark panels */
-  --void:#17181a;
-  --void-2:#1d1f21;
-  --void-3:#232527;
-  --void-4:#2b2e31;
-  --hair:rgba(236,234,230,.12);
-  --hair-2:rgba(236,234,230,.22);
-  --fg:#eceae6;
-  --fg-2:#b4b2ad;
-  --fg-3:#8b8985;
-  --fg-4:#66645f;
+  --void:#0d1b2a;
+  --void-2:#12253a;
+  --void-3:#1a3350;
+  --void-4:#24415f;
+  --hair:rgba(238,244,251,.13);
+  --hair-2:rgba(238,244,251,.24);
+  --fg:#eef4fb;
+  --fg-2:#b9c9db;
+  --fg-3:#8fa3ba;
+  --fg-4:#677c93;
 
   /* accent */
-  --arc:#ff5b1a;
-  --arc-2:#ff7a42;
-  --arc-ink:#c8410b;   /* orange that passes contrast on paper */
+  --arc:#1a66e0;
+  --arc-2:#3a82f0;
+  --arc-ink:#1550b8;   /* blue that passes contrast for small text on white */
 
   --d:'Space Grotesk',system-ui,-apple-system,sans-serif;
   --b:'Inter',system-ui,-apple-system,sans-serif;
@@ -81,19 +81,19 @@ p{margin:0}
 .btn--arc{background:var(--arc);color:#fff}
 .btn--arc:hover{background:var(--arc-2)}
 .btn--ghost{border-color:var(--rule-2);color:var(--ink)}
-.btn--ghost:hover{background:rgba(26,27,29,.06);border-color:var(--ink-3)}
+.btn--ghost:hover{background:rgba(13,27,42,.06);border-color:var(--ink-3)}
 .btn:active{transform:translateY(1px)}
 /* ghost buttons sitting on a dark panel */
 .hero .btn--ghost{border-color:var(--hair-2);color:var(--fg)}
-.hero .btn--ghost:hover{background:rgba(236,234,230,.08);border-color:var(--fg-4)}
+.hero .btn--ghost:hover{background:rgba(238,244,251,.08);border-color:var(--fg-4)}
 
 /* ───────── header ───────── */
 .hdr{
   position:fixed;inset:0 0 auto 0;z-index:100;height:var(--hdr);
-  background:rgba(233,230,224,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(245,248,252,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-bottom:1px solid transparent;transition:border-color .3s,background .3s;
 }
-.hdr.is-stuck{border-bottom-color:var(--rule);background:rgba(233,230,224,.96)}
+.hdr.is-stuck{border-bottom-color:var(--rule);background:rgba(245,248,252,.96)}
 .hdr__in{display:flex;align-items:center;justify-content:space-between;height:var(--hdr)}
 .brand{display:inline-flex;align-items:center;gap:10px}
 .brand img{width:26px;height:26px}
@@ -121,8 +121,8 @@ p{margin:0}
 .hero::after{ /* keep text legible over the animation */
   content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
   background:
-    linear-gradient(180deg,rgba(23,24,26,.92) 0%,rgba(23,24,26,.88) 52%,rgba(23,24,26,.42) 84%,rgba(23,24,26,.12) 100%),
-    linear-gradient(90deg,rgba(23,24,26,.62) 0%,rgba(23,24,26,.18) 58%,rgba(23,24,26,0) 100%);
+    linear-gradient(180deg,rgba(13,27,42,.92) 0%,rgba(13,27,42,.88) 52%,rgba(13,27,42,.42) 84%,rgba(13,27,42,.12) 100%),
+    linear-gradient(90deg,rgba(13,27,42,.62) 0%,rgba(13,27,42,.18) 58%,rgba(13,27,42,0) 100%);
 }
 .hero__in{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.72fr);gap:clamp(32px,5vw,72px);align-items:center}
 
@@ -140,7 +140,7 @@ p{margin:0}
 .hero__fig img{width:100%;aspect-ratio:933/1180;object-fit:cover;filter:contrast(1.06) saturate(.9)}
 .hero__fig figcaption{
   position:absolute;left:0;bottom:0;right:0;display:flex;align-items:center;gap:9px;
-  padding:12px 14px;background:linear-gradient(transparent,rgba(23,24,26,.92));
+  padding:12px 14px;background:linear-gradient(transparent,rgba(13,27,42,.92));
   font-family:var(--m);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);
 }
 
@@ -199,7 +199,7 @@ p{margin:0}
 .gal__i:hover img{transform:scale(1.045);filter:contrast(1.07) saturate(1)}
 .gal__c{
   position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;
-  padding:14px 16px;background:linear-gradient(transparent,rgba(23,24,26,.9));
+  padding:14px 16px;background:linear-gradient(transparent,rgba(13,27,42,.9));
   font-family:var(--m);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);
 }
 .gal__c i{color:var(--arc);font-style:normal}
@@ -292,7 +292,7 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
 .callfab{
   position:fixed;right:18px;bottom:18px;z-index:90;display:none;
   width:54px;height:54px;border-radius:50%;background:var(--arc);color:#fff;
-  place-items:center;box-shadow:0 10px 26px -6px rgba(255,91,26,.55);
+  place-items:center;box-shadow:0 10px 26px -6px rgba(26,102,224,.5);
 }
 
 /* ───────── reveal (progressive enhancement only) ───────── */
@@ -317,7 +317,7 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   .gal{grid-template-columns:repeat(2,1fr)}
   .gal__i,.gal__i--tall{grid-column:span 1;grid-row:span 1}
   .gal__i--tall{grid-column:span 2;grid-row:span 1}
-  .hero::after{background:linear-gradient(180deg,rgba(23,24,26,.9) 0%,rgba(23,24,26,.86) 60%,rgba(23,24,26,.3) 92%,rgba(23,24,26,.1) 100%)}
+  .hero::after{background:linear-gradient(180deg,rgba(13,27,42,.9) 0%,rgba(13,27,42,.86) 60%,rgba(13,27,42,.3) 92%,rgba(13,27,42,.1) 100%)}
 }
 @media (max-width:820px){
   .nav{
@@ -368,13 +368,13 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
 }
 .wb-bead,.wb-tip{fill:none}
 .wb-bead{
-  stroke:rgba(122,74,44,.55);stroke-width:2;
+  stroke:rgba(52,92,150,.55);stroke-width:2;
   stroke-dashoffset:var(--wb-p,9999);
 }
 .wb-tip{
-  stroke:#ff7a2e;stroke-width:3;stroke-linecap:round;opacity:0;
+  stroke:#4a95ff;stroke-width:3;stroke-linecap:round;opacity:0;
   stroke-dashoffset:var(--wb-p,9999);
-  filter:drop-shadow(0 0 5px rgba(255,122,46,.85));
+  filter:drop-shadow(0 0 5px rgba(74,149,255,.85));
 }
 .is-welded .wb-bead{animation:wbDraw 2.3s cubic-bezier(.45,0,.25,1) forwards}
 .is-welded .wb-tip{animation:wbDraw 2.3s cubic-bezier(.45,0,.25,1) forwards, wbTip 2.3s linear forwards}
@@ -382,7 +382,7 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
 @keyframes wbTip{0%{opacity:0}5%{opacity:1}90%{opacity:1}100%{opacity:0}}
 
 /* the form sits on a dark panel — warm the bead so it reads there */
-.fwrap .wb-bead{stroke:rgba(255,122,46,.34)}
+.fwrap .wb-bead{stroke:rgba(120,180,255,.4)}
 
 @media (prefers-reduced-motion:reduce){
   .weld-side{display:none}

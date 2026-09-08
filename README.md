@@ -77,6 +77,11 @@ renders a single static frame under `prefers-reduced-motion`. Tuning constants
 (`speed`, the cooling `decay`, `MAX_SPARKS`, the `STOPS` colour ramp) sit at the
 top of the file.
 
+The `STOPS` ramp runs cold steel -> arc blue -> white hot rather than the usual
+orange of cooling metal. That follows the brand rather than physics, and it is
+defensible: a live welding arc really is blue-white. If the warm version is ever
+wanted back, `STOPS` is the only thing to change.
+
 Every grid on the page uses explicit column counts chosen so the item count
 always divides evenly at each breakpoint — six capability cards over 3/2/1, five
 process steps over 5/2/1 with the fifth spanning, six spec rows over 6/3/2. This
