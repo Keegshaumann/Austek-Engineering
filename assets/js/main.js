@@ -172,7 +172,7 @@
     }).catch(function () {
       btn.disabled = false;
       btn.innerHTML = 'Send enquiry <span aria-hidden="true">&rarr;</span>';
-      note.textContent = 'That didn’t send. Please call 083 745 5505 or email ' + CONTACT_EMAIL + '.';
+      note.textContent = 'That didn’t send. Please call 084 532 6885 or email ' + CONTACT_EMAIL + '.';
       mailtoFallback(data);
     });
   });
