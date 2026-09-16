@@ -1,0 +1,16 @@
+# .htaccess — Austek Engineering (Hostinger, Apache/LiteSpeed)
+#
+# One job: never serve the internal files that come along when this folder is
+# uploaded as-is. On 16 September 2026 README.md, .gitignore and .gitattributes
+# were all downloadable from the live site. The README says the headline figures
+# are unconfirmed and the enquiry form is not connected — not a good read for a
+# prospect.
+#
+# RedirectMatch 404 answers with a plain "not found" rather than a "forbidden",
+# which would confirm the file is there. The same rules run on the Position Xero
+# and Cognexa sites on this host.
+#
+# /.well-known/ stays reachable — SSL certificate renewal uses it.
+RedirectMatch 404 /\.(?!well-known(/|$))
+RedirectMatch 404 \.(md|log|bak|sql|sh|ya?ml|lock)$
+RedirectMatch 404 ^/package(-lock)?\.json$
