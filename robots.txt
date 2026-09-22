@@ -1,0 +1,10 @@
+# robots.txt — Austek Engineering
+# Everything on this site is open to search engines. There is nothing here
+# that should be kept out of an index. The internal project files that used
+# to be reachable are blocked at the server, in .htaccess, not here —
+# naming a file in robots.txt tells people it exists.
+
+User-agent: *
+Disallow:
+
+Sitemap: https://austekengineering.co.za/sitemap.xml

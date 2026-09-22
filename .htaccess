@@ -1,6 +1,6 @@
 # .htaccess — Austek Engineering (Hostinger, Apache/LiteSpeed)
 #
-# One job: never serve the internal files that come along when this folder is
+# Two jobs: never serve the internal files that come along when this folder is
 # uploaded as-is. On 16 September 2026 README.md, .gitignore and .gitattributes
 # were all downloadable from the live site. The README says the headline figures
 # are unconfirmed and the enquiry form is not connected — not a good read for a
@@ -14,3 +14,31 @@
 RedirectMatch 404 /\.(?!well-known(/|$))
 RedirectMatch 404 \.(md|log|bak|sql|sh|ya?ml|lock)$
 RedirectMatch 404 ^/package(-lock)?\.json$
+
+# The second job: give the site one address.
+#
+# Before this, https://austekengineering.co.za/, https://www.austekengineering.co.za/
+# and https://austekengineering.co.za/index.html all returned the page itself, so
+# Google could see three copies of one page. The plain-http addresses already
+# redirect to https at Hostinger's edge, so only the www host and /index.html are
+# handled here.
+#
+# This goes up BEFORE the sitemap is submitted. A redirect on an address Google
+# has never fetched costs nothing; one on an address it already knows costs.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # www -> bare domain, keeping whatever path was asked for.
+  RewriteCond %{HTTP_HOST} ^www\.austekengineering\.co\.za$ [NC]
+  RewriteRule ^(.*)$ https://austekengineering.co.za/$1 [R=301,L]
+
+  # index.html -> the directory itself, at any depth.
+  # /index.html -> /, /blog/index.html -> /blog/, and so on, so the guide and FAQ
+  # pages added in September 2026 cannot be reached at two addresses either.
+  #
+  # The THE_REQUEST check reads the original request line, so this only fires on a
+  # real visit that spelled out index.html. Without it the rule would also catch the
+  # server's own internal rewrite of a directory to its index file, and loop forever.
+  RewriteCond %{THE_REQUEST} \s/+(?:[^?\s]*/)?index\.html[\s?] [NC]
+  RewriteRule ^(.*/)?index\.html$ https://austekengineering.co.za/$1 [R=301,L]
+</IfModule>
