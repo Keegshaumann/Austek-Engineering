@@ -25,9 +25,19 @@ Then open http://localhost:4820
 
 ## Hosting
 
-Upload the folder as-is to the Hostinger document root. It works unchanged on any
-static host (Hostinger, Netlify, Vercel, Cloudflare Pages, nginx, Apache). Nothing
-to compile, no server-side runtime.
+The live site is deployed from the `main` branch of this repository through
+Hostinger's Git deployment. To change it, commit to `main` and push, make sure the
+Hostinger deployment ran, then load the live page and check the change is there.
+Nothing is uploaded by hand. Whether Hostinger deploys by itself on every push has
+not been confirmed.
+
+Every file in the repository lands in the web root, this README included.
+`.htaccess` answers 404 for Markdown, dot-files and a few other internal file
+types, so they are not served to visitors.
+
+The files work unchanged on any static host (Netlify, Vercel, Cloudflare Pages,
+nginx, Apache), though the `.htaccess` rules only run on Apache and LiteSpeed.
+Nothing to compile, no server-side runtime.
 
 ## Principles this rebuild follows
 
