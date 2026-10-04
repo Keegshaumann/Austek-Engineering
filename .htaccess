@@ -41,4 +41,8 @@ RedirectMatch 404 ^/package(-lock)?\.json$
   # server's own internal rewrite of a directory to its index file, and loop forever.
   RewriteCond %{THE_REQUEST} \s/+(?:[^?\s]*/)?index\.html[\s?] [NC]
   RewriteRule ^(.*/)?index\.html$ https://austekengineering.co.za/$1 [R=301,L]
+
+  # Pages from the website this domain carried before the rebuild. Old links to
+  # them land on the homepage instead of a "not found" page.
+  RewriteRule ^(contact|gallery)\.html$ https://austekengineering.co.za/ [R=301,L,NC]
 </IfModule>
