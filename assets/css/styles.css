@@ -103,6 +103,8 @@ p{margin:0}
 .nav{display:flex;align-items:center;gap:26px}
 .nav>a{font-size:13.5px;font-weight:500;color:var(--ink-3);transition:color .18s}
 .nav>a:hover{color:var(--ink)}
+/* The header quote button is a .nav>a too, which turned its label grey on blue; keep it white. */
+.nav>a.btn--arc,.nav>a.btn--arc:hover{color:#fff}
 .nav__call{display:inline-flex;align-items:center;gap:7px;font-family:var(--m);font-size:13px!important;color:var(--ink)!important}
 .nav__call svg{color:var(--arc-ink)}
 
