@@ -437,4 +437,19 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   .cards .card,.site,.val,.step{padding:20px}
   .ftr{padding-top:44px}
   .ftr__in{gap:32px;padding-bottom:32px}
+
+  /* Mobile review, 15 October 2026 */
+  /* The hero photo is a tall portrait cut to 4:3 on a phone; centred, the
+     crop kept the pipe and lost the welder's mask above it. Framing from
+     near the top keeps the welder, the pipe and the sparks in the picture. */
+  .hero__fig img{object-position:50% 15%}
+  /* Work captions sat at 9.5px on light, metallic photos and could not be
+     read; a larger size and a deeper shade under them. */
+  .gal__c{font-size:11px;padding:28px 11px 10px;background:linear-gradient(rgba(13,27,42,0),rgba(13,27,42,.82) 45%,rgba(13,27,42,.95))}
+  /* 15px fields make iOS Safari zoom the page on focus; 16px does not. */
+  .f__i{font-size:16px}
+  /* The four values were two columns of eleven-word lines at 13.6px; one
+     column reads as sentences. */
+  .vals{grid-template-columns:1fr}
+  .val p{font-size:15px}
 }
