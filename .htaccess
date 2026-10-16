@@ -46,3 +46,16 @@ RedirectMatch 404 ^/package(-lock)?\.json$
   # them land on the homepage instead of a "not found" page.
   RewriteRule ^(contact|gallery)\.html$ https://austekengineering.co.za/ [R=301,L,NC]
 </IfModule>
+
+# Cache the stylesheets and scripts for a year.
+#
+# Every page loads them with a version number (styles.css?v=8, main.js?v=4), and
+# the number goes up whenever the file changes, so a browser that kept the old
+# copy fetches the new one anyway. Images are left out on purpose: a picture
+# replaced under the same name would stay stale for a year, which is why replaced
+# pictures get new names instead.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
