@@ -160,4 +160,9 @@
    margin keeps the line exactly where it was. */
 @media (max-width:640px){
   .crumb a{padding-block:12px;margin-block:-12px}
+  /* Article pages have no page head, and the article's own top padding
+     falls to 40px on a phone, so the breadcrumb sat under the 64px fixed
+     header where it could be neither read nor tapped. It now starts where
+     the blog index and FAQ pages put theirs. */
+  .post{padding-top:calc(var(--hdr) + 36px)}
 }
