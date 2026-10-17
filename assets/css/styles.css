@@ -452,6 +452,11 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
      column reads as sentences. */
   .vals{grid-template-columns:1fr}
   .val p{font-size:15px}
+
+  /* Phone audit, 17 October 2026 */
+  /* The stat strip labels were 10.5px in the lightest grey on the pale
+     band, 2.6:1. 12px in the body-text grey reads at 4.9:1. */
+  .trust__i span{font-size:12px;letter-spacing:.1em;color:var(--ink-3)}
 }
 
 /* ───────── footer credit ─────────
