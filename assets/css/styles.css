@@ -475,6 +475,10 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
      is now at least 44px tall with clear space between them. */
   .det__v--big[href^="tel:"]{padding-bottom:8px}
   .det__v--big + a.det__v[href^="tel:"]{padding-block:10px}
+  /* Footer links were 22px tall with 10px between them; padding makes
+     each one a 44px tap and replaces the gap. */
+  .ftr__nav div{gap:0}
+  .ftr__nav a{padding-block:11px}
 }
 
 /* ───────── footer credit ─────────

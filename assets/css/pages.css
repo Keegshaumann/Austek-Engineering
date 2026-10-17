@@ -154,3 +154,10 @@
   .pcta{padding:22px}
   .tw table{min-width:440px}
 }
+
+/* Phones (the same 640px line as styles.css). Breadcrumb links were 19px
+   tall; the padding gives each a 43px tap height and the matching negative
+   margin keeps the line exactly where it was. */
+@media (max-width:640px){
+  .crumb a{padding-block:12px;margin-block:-12px}
+}
