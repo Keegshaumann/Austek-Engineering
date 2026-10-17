@@ -457,6 +457,20 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   /* The stat strip labels were 10.5px in the lightest grey on the pale
      band, 2.6:1. 12px in the body-text grey reads at 4.9:1. */
   .trust__i span{font-size:12px;letter-spacing:.1em;color:var(--ink-3)}
+  /* The other small labels were 10-11.5px, most of them faint. All go to
+     12px; on the light ground they take the body-text grey, on the navy
+     panels the next lighter navy tint, and the green "Active" status a
+     slightly deeper green, so each reads at 4.5:1 or better. */
+  .shead__k{font-size:12px;color:var(--ink-3)}
+  .contact .shead__k{color:var(--fg-3)}
+  .spec__row span{font-size:12px;color:var(--ink-3)}
+  .site__st{font-size:12px;color:var(--ink-3)}
+  .site__st--on{color:#2b8347}
+  .f__l{font-size:12px}
+  .det__k{font-size:12px;color:var(--fg-3)}
+  .ftr__nav h2,.ftr__nav h4{font-size:12px;color:var(--fg-3)}
+  /* Process step text was 13.6px; 15px matches the values below it. */
+  .step p{font-size:15px}
 }
 
 /* ───────── footer credit ─────────
