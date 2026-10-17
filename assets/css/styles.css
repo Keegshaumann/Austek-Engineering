@@ -110,8 +110,11 @@ p{margin:0}
 
 .burger{display:none;width:40px;height:40px;background:none;border:1px solid var(--rule-2);border-radius:3px;cursor:pointer;padding:0;place-items:center;gap:5px}
 .burger span{display:block;width:16px;height:1.5px;background:var(--ink);transition:transform .25s,opacity .2s}
-.burger[aria-expanded="true"] span:first-child{transform:translateY(3.25px) rotate(45deg)}
-.burger[aria-expanded="true"] span:last-child{transform:translateY(-3.25px) rotate(-45deg)}
+/* The two grid rows stretch to fill the 38px inside the border, so the bars
+   sit 21.5px apart, not 6.5px; at 3.25px they never met and drew a ">".
+   10.75px brings both to the centre and makes the X. */
+.burger[aria-expanded="true"] span:first-child{transform:translateY(10.75px) rotate(45deg)}
+.burger[aria-expanded="true"] span:last-child{transform:translateY(-10.75px) rotate(-45deg)}
 
 /* ───────── hero (dark panel) ───────── */
 .hero{

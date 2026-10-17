@@ -35,16 +35,18 @@
 
   /* ---------------- mobile nav ---------------- */
   var burger = $('#burger'), nav = $('#nav');
+  /* The button's label follows the menu, so a screen reader hears
+     "Close menu" while it is open rather than "Open menu" twice. */
+  var setMenu = function (open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    nav.classList.toggle('is-open', open);
+  };
   burger.addEventListener('click', function () {
-    var open = burger.getAttribute('aria-expanded') === 'true';
-    burger.setAttribute('aria-expanded', String(!open));
-    nav.classList.toggle('is-open', !open);
+    setMenu(burger.getAttribute('aria-expanded') !== 'true');
   });
   nav.addEventListener('click', function (e) {
-    if (e.target.closest('a')) {
-      burger.setAttribute('aria-expanded', 'false');
-      nav.classList.remove('is-open');
-    }
+    if (e.target.closest('a')) setMenu(false);
   });
 
   /* ---------------- reveals ---------------- */
