@@ -157,7 +157,7 @@ p{margin:0}
 .trust__i b{display:block;font-family:var(--d);font-size:clamp(2rem,4vw,3rem);letter-spacing:-.04em;color:var(--ink);line-height:1}
 .trust__i b i{font-style:normal;color:var(--arc-ink);font-size:.6em}
 .trust__word{color:var(--arc-ink)!important}
-.trust__i span{display:block;margin-top:9px;font-family:var(--m);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-4)}
+.trust__i span{display:block;margin-top:9px;font-family:var(--m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 
 /* ───────── marquee ───────── */
 .mq{overflow:hidden;border-bottom:1px solid var(--rule);padding:16px 0;background:var(--paper)}
@@ -170,7 +170,7 @@ p{margin:0}
 .sec{padding-block:var(--sec)}
 .sec--rule{border-top:1px solid var(--rule)}
 .shead{max-width:640px;margin-bottom:clamp(40px,5vw,64px)}
-.shead__k{display:flex;align-items:center;gap:12px;font-family:var(--m);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:18px}
+.shead__k{display:flex;align-items:center;gap:12px;font-family:var(--m);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
 .shead__k span{color:var(--arc-ink)}
 .shead__h{font-size:clamp(2rem,4.6vw,3.4rem);color:var(--ink)}
 .shead__p{margin-top:20px;color:var(--ink-3);line-height:1.7;max-width:56ch}
@@ -193,7 +193,7 @@ p{margin:0}
 
 .spec{margin-top:1px;border:1px solid var(--rule);background:var(--rule);display:grid;grid-template-columns:repeat(6,1fr);gap:1px}
 .spec__row{padding:16px 20px;background:var(--paper-2);display:flex;flex-direction:column;gap:5px}
-.spec__row span{font-family:var(--m);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4)}
+.spec__row span{font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 .spec__row b{font-size:13.5px;font-weight:500;color:var(--ink-2)}
 
 /* ───────── gallery ───────── */
@@ -212,8 +212,8 @@ p{margin:0}
 /* ───────── sites ───────── */
 .sites{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
 .site{background:var(--paper-3);padding:clamp(24px,3vw,34px)}
-.site__st{display:inline-flex;align-items:center;gap:8px;font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);margin-bottom:18px}
-.site__st--on{color:#2f8f4d}
+.site__st{display:inline-flex;align-items:center;gap:8px;font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+.site__st--on{color:#2b8347}
 .site h3{font-size:1.35rem;margin-bottom:6px;color:var(--ink)}
 .site__loc{font-family:var(--m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--arc-ink);margin-bottom:14px}
 .site p:last-of-type{color:var(--ink-3);font-size:14.5px;line-height:1.68}
@@ -242,14 +242,14 @@ p{margin:0}
 /* ───────── contact (dark panel) ───────── */
 .contact{background:var(--void-2);color:var(--fg);border-top:1px solid var(--rule)}
 .contact .shead__h{color:var(--fg)}
-.contact .shead__k{color:var(--fg-4)}
+.contact .shead__k{color:var(--fg-3)}
 .contact .shead__k span{color:var(--arc)}
 .contact .shead__p{color:var(--fg-2)}
 .contact__in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(36px,5vw,72px);align-items:start}
 .det{list-style:none;padding:0;margin:clamp(32px,4vw,48px) 0 0;display:flex;flex-direction:column;gap:26px}
 .det li{display:flex;flex-direction:column;gap:6px;padding-bottom:22px;border-bottom:1px solid var(--hair)}
 .det li:last-child{border-bottom:none}
-.det__k{font-family:var(--m);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-4)}
+.det__k{font-family:var(--m);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
 .det__v{font-size:16px;color:var(--fg-2);transition:color .18s;line-height:1.5}
 a.det__v:hover{color:var(--arc)}
 .det__v--big{font-family:var(--d);font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;color:var(--fg)}
@@ -260,7 +260,7 @@ a.det__v:hover{color:var(--arc)}
 .form__t{font-family:var(--m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-4)}
 .form__grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .f{display:flex;flex-direction:column;gap:8px}
-.f__l{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
+.f__l{font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
 .f__l i{color:var(--arc);font-style:normal}
 .f__i{
   width:100%;padding:12px 14px;background:var(--void-3);
@@ -287,7 +287,7 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
 .ftr__brand b{color:var(--fg-2);font-weight:600}
 .ftr__nav{display:flex;flex-wrap:wrap;gap:52px}
 .ftr__nav div{display:flex;flex-direction:column;gap:10px}
-.ftr__nav h2,.ftr__nav h4{font-family:var(--m);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-4);font-weight:500;margin-bottom:4px}
+.ftr__nav h2,.ftr__nav h4{font-family:var(--m);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);font-weight:500;margin-bottom:4px}
 .ftr__nav a{font-size:13.5px;color:var(--fg-2);transition:color .18s}
 .ftr__nav a:hover{color:var(--arc)}
 .ftr__base{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;padding-block:20px;border-top:1px solid var(--hair)}
@@ -457,21 +457,10 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   .val p{font-size:15px}
 
   /* Phone audit, 17 October 2026 */
-  /* The stat strip labels were 10.5px in the lightest grey on the pale
-     band, 2.6:1. 12px in the body-text grey reads at 4.9:1. */
-  .trust__i span{font-size:12px;letter-spacing:.1em;color:var(--ink-3)}
-  /* The other small labels were 10-11.5px, most of them faint. All go to
-     12px; on the light ground they take the body-text grey, on the navy
-     panels the next lighter navy tint, and the green "Active" status a
-     slightly deeper green, so each reads at 4.5:1 or better. */
-  .shead__k{font-size:12px;color:var(--ink-3)}
-  .contact .shead__k{color:var(--fg-3)}
-  .spec__row span{font-size:12px;color:var(--ink-3)}
-  .site__st{font-size:12px;color:var(--ink-3)}
-  .site__st--on{color:#2b8347}
-  .f__l{font-size:12px}
-  .det__k{font-size:12px;color:var(--fg-3)}
-  .ftr__nav h2,.ftr__nav h4{font-size:12px;color:var(--fg-3)}
+  /* The small labels (stat strip, section, spec, site status, form,
+     contact and footer) were 10-11.5px and mostly faint, as low as 2.6:1.
+     They are now 12px at 4.5:1 or better at every width: the values moved
+     into the base rules above on 18 October so desktop reads the same. */
   /* Process step text was 13.6px; 15px matches the values below it. */
   .step p{font-size:15px}
   /* The two phone numbers sat 6px apart, easy to tap the wrong one. Each
