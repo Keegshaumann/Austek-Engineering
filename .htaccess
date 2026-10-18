@@ -54,8 +54,12 @@ RedirectMatch 404 ^/package(-lock)?\.json$
 # copy fetches the new one anyway. Images are left out on purpose: a picture
 # replaced under the same name would stay stale for a year, which is why replaced
 # pictures get new names instead.
+#
+# The self-hosted fonts (assets/fonts/*.woff2, 18 October 2026) are cached for a
+# year as well: they are Google Fonts' fixed versioned files and never change. A
+# new font version gets a new file name.
 <IfModule mod_headers.c>
-  <FilesMatch "\.(css|js)$">
+  <FilesMatch "\.(css|js|woff2)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>

@@ -122,7 +122,8 @@ an enquiry is never silently lost. A honeypot field is already in place for bots
       `austekengineering.co.za`.
 - [ ] Export a dedicated 1200x630 Open Graph share image; it currently reuses
       the hero photograph.
-- [ ] Self-host the two Google fonts to drop the third-party request.
+- [x] Self-host the Google fonts to drop the third-party request (18 October 2026:
+      the three families are in `assets/fonts/`, declared at the top of `styles.css`).
 - [ ] Confirm the "31 years" and "20 years at Heineken" figures with the client
       before they go stale — they are hardcoded in the trust bar.
 - [ ] Add real project names/dates to the gallery captions if the client is
