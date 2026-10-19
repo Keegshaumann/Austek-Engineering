@@ -131,16 +131,16 @@
   var mailtoFallback = function (data) {
     var body = [
       'Name: ' + data.name,
-      'Company: ' + (data.company || '—'),
+      'Company: ' + (data.company || 'not given'),
       'Phone: ' + data.phone,
-      'Email: ' + (data.email || '—'),
+      'Email: ' + (data.email || 'not given'),
       'Work required: ' + data.work,
       '',
       'Details:',
       data.details
     ].join('\n');
     window.location.href = 'mailto:' + CONTACT_EMAIL +
-      '?subject=' + encodeURIComponent('Quote request — ' + data.name) +
+      '?subject=' + encodeURIComponent('Quote request: ' + data.name) +
       '&body=' + encodeURIComponent(body);
   };
 
@@ -169,7 +169,7 @@
       if (!r.ok) throw new Error('Bad response');
       form.classList.add('is-sent');
       form.reset();
-      note.textContent = 'Thanks — your enquiry is in. We’ll come back to you shortly.';
+      note.textContent = 'Thanks, your enquiry is in. We’ll come back to you shortly.';
       btn.textContent = 'Sent';
     }).catch(function () {
       btn.disabled = false;
