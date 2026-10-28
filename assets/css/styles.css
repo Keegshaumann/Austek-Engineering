@@ -130,13 +130,17 @@ p{margin:0}
 .nav__call{display:inline-flex;align-items:center;gap:7px;font-family:var(--m);font-size:13px!important;color:var(--ink)!important}
 .nav__call svg{color:var(--arc-ink)}
 
-.burger{display:none;width:40px;height:40px;background:none;border:1px solid var(--rule-2);border-radius:3px;cursor:pointer;padding:0;place-items:center;gap:5px}
-.burger span{display:block;width:16px;height:1.5px;background:var(--ink);transition:transform .25s,opacity .2s}
-/* The two grid rows stretch to fill the 38px inside the border, so the bars
-   sit 21.5px apart, not 6.5px; at 3.25px they never met and drew a ">".
-   10.75px brings both to the centre and makes the X. */
-.burger[aria-expanded="true"] span:first-child{transform:translateY(10.75px) rotate(45deg)}
-.burger[aria-expanded="true"] span:last-child{transform:translateY(-10.75px) rotate(-45deg)}
+/* Menu button (phone audit, 28 October 2026). It was two 1.5px bars that the
+   grid rows pushed 21.5px apart, and at 1.5px they landed on half pixels and
+   drew at two different weights, so it did not read as a menu. Now three
+   2px bars 5px apart, stacked in the middle of a 44px button: 44 minus the
+   border leaves 42, the stack is 16, so every bar sits on a whole pixel.
+   Open, the middle bar fades and the outer two meet 7px in to make the X. */
+.burger{display:none;width:44px;height:44px;background:none;border:1px solid var(--rule-2);border-radius:3px;cursor:pointer;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger span{display:block;flex:none;width:20px;height:2px;background:var(--ink);transition:transform .25s,opacity .2s}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* ───────── hero (dark panel) ───────── */
 .hero{
@@ -249,7 +253,8 @@ p{margin:0}
 .quote p{font-family:var(--d);font-size:clamp(1.15rem,2vw,1.5rem);font-weight:500;letter-spacing:-.02em;line-height:1.35;color:var(--ink)}
 .quote footer{margin-top:16px;display:flex;flex-direction:column;gap:3px}
 .quote footer b{font-family:var(--m);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-weight:500}
-.quote footer span{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4)}
+/* "Managing Director" was --ink-4, 2.85:1 on the page; --ink-3 is 5.3:1. */
+.quote footer span{font-family:var(--m);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 .prose{display:flex;flex-direction:column;gap:17px}
 .prose p{color:var(--ink-3);line-height:1.75;font-size:15px}
 .about__fig{margin:0;border:1px solid var(--rule)}
@@ -279,7 +284,10 @@ a.det__v:hover{color:var(--arc)}
 
 .fwrap{border:1px solid var(--hair);background:var(--void)}
 .form{padding:clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:18px}
-.form__t{font-family:var(--m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-4)}
+/* The form title and note were --fg-4, 4.0:1 on the form panel; --fg-3 is
+   6.7:1. The note's phone link moves to the lighter blue for the same
+   reason (3.3:1 to 4.7:1). 28 October 2026. */
+.form__t{font-family:var(--m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
 .form__grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .f{display:flex;flex-direction:column;gap:8px}
 .f__l{font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
@@ -296,8 +304,8 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
 .f__e{font-size:12px;color:#ff8f8f;min-height:0}
 .f.is-bad .f__i{border-color:#ff8f8f}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.form__note{font-size:12.5px;color:var(--fg-4);line-height:1.6}
-.form__note a{color:var(--arc)}
+.form__note{font-size:12.5px;color:var(--fg-3);line-height:1.6}
+.form__note a{color:var(--arc-2)}
 .form.is-sent .form__note{color:#6fdc8c}
 
 /* ───────── footer (dark) ───────── */
@@ -355,12 +363,25 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   .nav.is-open{opacity:1;transform:none;pointer-events:auto}
   .nav>a{padding:14px 0;border-bottom:1px solid var(--rule);font-size:15.5px}
   .nav .btn{margin-top:14px}
-  .burger{display:grid}
+  .burger{display:flex}
+  /* The logo is a dark square with the name set small inside it; at 26px it
+     read as a black tile. 40px lets the mark show, and the "Austek." beside
+     it carries the name (phone audit, 28 October 2026). */
+  .brand img{width:40px;height:40px}
   .trust__in{grid-template-columns:repeat(2,1fr)}
   .trust__i:nth-child(3){border-left:none}
   .trust__i:nth-child(n+3){border-top:1px solid var(--rule)}
   .callfab{display:grid}
-  .ftr{padding-bottom:72px}
+  /* The call button covers the bottom 72px of the screen (54px + 18px).
+     96px under the footer lets the last line scroll fully clear of it, and
+     the scroll padding keeps a field the browser scrolls to on focus (or
+     after a failed send) above it rather than under it. */
+  .ftr{padding-bottom:96px}
+  html{scroll-padding-bottom:88px}
+  /* While someone is typing in the quote form the button sat over the right
+     end of the field; it steps aside until the field loses focus. */
+  .callfab{transition:opacity .2s,visibility .2s}
+  body:has(.f__i:focus) .callfab{opacity:0;visibility:hidden}
 }
 @media (max-width:560px){
   .cards{grid-template-columns:1fr}
@@ -493,10 +514,21 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
      each one a 44px tap and replaces the gap. */
   .ftr__nav div{gap:0}
   .ftr__nav a{padding-block:11px}
-  /* The floating call button covers the bottom 72px of the screen, and the
-     footer's 72px bottom padding only brought the last line level with
-     its top edge. 96px lets the page scroll fully clear of it. */
-  .ftr{padding-bottom:96px}
+  /* The footer's 96px bottom padding, which lets the page scroll clear of
+     the floating call button, now sits in the 820px block with the button
+     itself, so tablets get it too (28 October 2026). */
+
+  /* Phone audit, 28 October 2026: no reading text under 13px on a phone.
+     These labels were 10.5-12.5px. Same fonts, case and colours; the
+     letter-spacing on the work captions comes in a little so the larger
+     words still fit two lines on a 140px tile. */
+  .tag,.creds li,.hero__fig figcaption,.trust__i span,.site__loc,
+  .quote footer b,.quote footer span,.form__t,.form__note{font-size:13px}
+  /* At 13px the stat labels ran into the column rule on a 360px phone. */
+  .trust__i{padding-inline:6px}
+  .trust__i span{letter-spacing:.06em}
+  .gal__c{display:block;font-size:13px;letter-spacing:.04em;line-height:1.45;padding:24px 10px 9px}
+  .gal__c i{margin-right:2px}
 }
 
 /* ───────── footer credit ─────────
