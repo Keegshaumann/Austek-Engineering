@@ -197,4 +197,5 @@
      the byline and date line, table captions, note labels and the Sources
      heading were 11-11.5px. */
   .crumb,.post__meta,.tw caption,.note__k,.srcs h2{font-size:13px}
+  .rtxt p,.rtxt ul,.rtxt ol,.faq p,.faq ul,.note p,.pcta p,.pitem p:not(.pitem__k),.srcs ol{font-size:16px}
 }
