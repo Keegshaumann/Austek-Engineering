@@ -544,3 +544,9 @@ select.f__i{appearance:none;background-image:linear-gradient(45deg,transparent 5
   .ftr__credit{display:block;margin-top:6px}
   .ftr__credit a{display:inline-block;padding:4px 0}
 }
+
+/* ───────── preferred source badge ─────────
+   Google's own "Add as a preferred source" badge under the legal line (owner,
+   5 November 2026). Width and height are on the img, so nothing shifts. */
+.ftr__source{padding-bottom:20px}
+.pref-source{display:inline-block;line-height:0}
