@@ -199,3 +199,12 @@
   .crumb,.post__meta,.tw caption,.note__k,.srcs h2{font-size:13px}
   .rtxt p,.rtxt ul,.rtxt ol,.faq p,.faq ul,.note p,.pcta p,.pitem p:not(.pitem__k),.srcs ol{font-size:16px}
 }
+
+/* Post pictures (13 Nov 2026): one lead picture under the short answer, and
+   inline ones in the reading column. Width and height are set on every img,
+   so the page does not jump while they load. */
+.post__fig{margin:clamp(26px,3.5vw,36px) 0 0}
+.post__fig img{display:block;width:100%;height:auto;border-radius:12px;background:var(--paper-2)}
+.post__fig figcaption{margin-top:9px;font-size:13.5px;line-height:1.5;color:var(--ink-3)}
+.rtxt > .post__fig{margin-top:28px}
+.rtxt > .post__fig + *{margin-top:26px}
