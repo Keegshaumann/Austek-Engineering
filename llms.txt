@@ -22,6 +22,7 @@
 - [304 vs 316 stainless steel: how to choose](https://austekengineering.co.za/blog/304-vs-316-stainless-steel/): why chlorides decide which grade resists pitting, whether both are food grade, and what welding changes.
 - [TIG vs MIG welding: which process a plant job needs](https://austekengineering.co.za/blog/tig-vs-mig-welding/): how the two differ and where each suits plant pipework and steelwork.
 - [How to prepare for a plant shutdown](https://austekengineering.co.za/blog/plant-shutdown-preparation/): what to close out before the plant stops, what a fabricator needs to quote, and the delays that cost the most time.
+- [Pipe spool fabrication: what to build off site, and what to weld in place](https://austekengineering.co.za/blog/pipe-spool-fabrication/): how to split plant pipework between spools fabricated off site and joints welded in place, and what a fabricator needs from the plant to plan it.
 - [All guides](https://austekengineering.co.za/blog/)
 
 ## Optional
